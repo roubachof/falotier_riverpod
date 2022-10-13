@@ -1,5 +1,5 @@
-name: otiocare
-description: Reboot of otiocare project in Flutter
+name: falotier
+description: PoC for coherent state management architecture
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -30,9 +30,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  logger: ^1.1.0
   go_router: ^5.1.0
   flutter_riverpod: ^2.0.2
-
+  freezed_annotation: ^2.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -42,7 +43,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   otio_design:
-    path: packages/otio_design
+    path: packages/falotier_design
 
   build_runner: ^2.3.0
   freezed: ^2.1.1
