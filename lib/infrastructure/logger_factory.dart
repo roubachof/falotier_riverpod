@@ -18,3 +18,9 @@ class LoggerFactory {
             loggerName));
   }
 }
+
+extension LoggerExtension on Logger {
+  listCount(Iterable list) {
+    i('${list.length} items returned');
+  }
+}

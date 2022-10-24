@@ -16,7 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$StreetLamp {
-  String get streetName => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  Street get street => throw _privateConstructorUsedError;
   bool get isLit => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -29,7 +30,9 @@ abstract class $StreetLampCopyWith<$Res> {
   factory $StreetLampCopyWith(
           StreetLamp value, $Res Function(StreetLamp) then) =
       _$StreetLampCopyWithImpl<$Res>;
-  $Res call({String streetName, bool isLit});
+  $Res call({String id, Street street, bool isLit});
+
+  $StreetCopyWith<$Res> get street;
 }
 
 /// @nodoc
@@ -42,19 +45,31 @@ class _$StreetLampCopyWithImpl<$Res> implements $StreetLampCopyWith<$Res> {
 
   @override
   $Res call({
-    Object? streetName = freezed,
+    Object? id = freezed,
+    Object? street = freezed,
     Object? isLit = freezed,
   }) {
     return _then(_value.copyWith(
-      streetName: streetName == freezed
-          ? _value.streetName
-          : streetName // ignore: cast_nullable_to_non_nullable
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
+      street: street == freezed
+          ? _value.street
+          : street // ignore: cast_nullable_to_non_nullable
+              as Street,
       isLit: isLit == freezed
           ? _value.isLit
           : isLit // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
+  }
+
+  @override
+  $StreetCopyWith<$Res> get street {
+    return $StreetCopyWith<$Res>(_value.street, (value) {
+      return _then(_value.copyWith(street: value));
+    });
   }
 }
 
@@ -65,7 +80,10 @@ abstract class _$$_StreetLampCopyWith<$Res>
           _$_StreetLamp value, $Res Function(_$_StreetLamp) then) =
       __$$_StreetLampCopyWithImpl<$Res>;
   @override
-  $Res call({String streetName, bool isLit});
+  $Res call({String id, Street street, bool isLit});
+
+  @override
+  $StreetCopyWith<$Res> get street;
 }
 
 /// @nodoc
@@ -80,14 +98,19 @@ class __$$_StreetLampCopyWithImpl<$Res> extends _$StreetLampCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? streetName = freezed,
+    Object? id = freezed,
+    Object? street = freezed,
     Object? isLit = freezed,
   }) {
     return _then(_$_StreetLamp(
-      streetName: streetName == freezed
-          ? _value.streetName
-          : streetName // ignore: cast_nullable_to_non_nullable
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
+      street: street == freezed
+          ? _value.street
+          : street // ignore: cast_nullable_to_non_nullable
+              as Street,
       isLit: isLit == freezed
           ? _value.isLit
           : isLit // ignore: cast_nullable_to_non_nullable
@@ -99,16 +122,19 @@ class __$$_StreetLampCopyWithImpl<$Res> extends _$StreetLampCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_StreetLamp implements _StreetLamp {
-  const _$_StreetLamp({required this.streetName, required this.isLit});
+  const _$_StreetLamp(
+      {required this.id, required this.street, required this.isLit});
 
   @override
-  final String streetName;
+  final String id;
+  @override
+  final Street street;
   @override
   final bool isLit;
 
   @override
   String toString() {
-    return 'StreetLamp(streetName: $streetName, isLit: $isLit)';
+    return 'StreetLamp(id: $id, street: $street, isLit: $isLit)';
   }
 
   @override
@@ -116,15 +142,16 @@ class _$_StreetLamp implements _StreetLamp {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_StreetLamp &&
-            const DeepCollectionEquality()
-                .equals(other.streetName, streetName) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.street, street) &&
             const DeepCollectionEquality().equals(other.isLit, isLit));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(streetName),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(street),
       const DeepCollectionEquality().hash(isLit));
 
   @JsonKey(ignore: true)
@@ -135,11 +162,14 @@ class _$_StreetLamp implements _StreetLamp {
 
 abstract class _StreetLamp implements StreetLamp {
   const factory _StreetLamp(
-      {required final String streetName,
+      {required final String id,
+      required final Street street,
       required final bool isLit}) = _$_StreetLamp;
 
   @override
-  String get streetName;
+  String get id;
+  @override
+  Street get street;
   @override
   bool get isLit;
   @override
