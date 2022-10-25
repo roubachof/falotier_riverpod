@@ -27,33 +27,37 @@ mixin _$CityZone {
 /// @nodoc
 abstract class $CityZoneCopyWith<$Res> {
   factory $CityZoneCopyWith(CityZone value, $Res Function(CityZone) then) =
-      _$CityZoneCopyWithImpl<$Res>;
+      _$CityZoneCopyWithImpl<$Res, CityZone>;
+  @useResult
   $Res call({String id, String name});
 }
 
 /// @nodoc
-class _$CityZoneCopyWithImpl<$Res> implements $CityZoneCopyWith<$Res> {
+class _$CityZoneCopyWithImpl<$Res, $Val extends CityZone>
+    implements $CityZoneCopyWith<$Res> {
   _$CityZoneCopyWithImpl(this._value, this._then);
 
-  final CityZone _value;
   // ignore: unused_field
-  final $Res Function(CityZone) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? name = freezed,
+    Object? id = null,
+    Object? name = null,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: name == freezed
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -63,30 +67,30 @@ abstract class _$$_CityZoneCopyWith<$Res> implements $CityZoneCopyWith<$Res> {
           _$_CityZone value, $Res Function(_$_CityZone) then) =
       __$$_CityZoneCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String id, String name});
 }
 
 /// @nodoc
-class __$$_CityZoneCopyWithImpl<$Res> extends _$CityZoneCopyWithImpl<$Res>
+class __$$_CityZoneCopyWithImpl<$Res>
+    extends _$CityZoneCopyWithImpl<$Res, _$_CityZone>
     implements _$$_CityZoneCopyWith<$Res> {
   __$$_CityZoneCopyWithImpl(
       _$_CityZone _value, $Res Function(_$_CityZone) _then)
-      : super(_value, (v) => _then(v as _$_CityZone));
+      : super(_value, _then);
 
-  @override
-  _$_CityZone get _value => super._value as _$_CityZone;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? name = freezed,
+    Object? id = null,
+    Object? name = null,
   }) {
     return _then(_$_CityZone(
-      id == freezed
+      null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name == freezed
+      null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
@@ -114,18 +118,16 @@ class _$_CityZone implements _CityZone {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_CityZone &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.name, name));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(name));
+  int get hashCode => Object.hash(runtimeType, id, name);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_CityZoneCopyWith<_$_CityZone> get copyWith =>
       __$$_CityZoneCopyWithImpl<_$_CityZone>(this, _$identity);
 }

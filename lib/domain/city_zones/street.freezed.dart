@@ -27,46 +27,51 @@ mixin _$Street {
 /// @nodoc
 abstract class $StreetCopyWith<$Res> {
   factory $StreetCopyWith(Street value, $Res Function(Street) then) =
-      _$StreetCopyWithImpl<$Res>;
+      _$StreetCopyWithImpl<$Res, Street>;
+  @useResult
   $Res call({String id, String name, CityZone zone});
 
   $CityZoneCopyWith<$Res> get zone;
 }
 
 /// @nodoc
-class _$StreetCopyWithImpl<$Res> implements $StreetCopyWith<$Res> {
+class _$StreetCopyWithImpl<$Res, $Val extends Street>
+    implements $StreetCopyWith<$Res> {
   _$StreetCopyWithImpl(this._value, this._then);
 
-  final Street _value;
   // ignore: unused_field
-  final $Res Function(Street) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? name = freezed,
-    Object? zone = freezed,
+    Object? id = null,
+    Object? name = null,
+    Object? zone = null,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: name == freezed
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      zone: zone == freezed
+      zone: null == zone
           ? _value.zone
           : zone // ignore: cast_nullable_to_non_nullable
               as CityZone,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $CityZoneCopyWith<$Res> get zone {
     return $CityZoneCopyWith<$Res>(_value.zone, (value) {
-      return _then(_value.copyWith(zone: value));
+      return _then(_value.copyWith(zone: value) as $Val);
     });
   }
 }
@@ -76,6 +81,7 @@ abstract class _$$_StreetCopyWith<$Res> implements $StreetCopyWith<$Res> {
   factory _$$_StreetCopyWith(_$_Street value, $Res Function(_$_Street) then) =
       __$$_StreetCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String id, String name, CityZone zone});
 
   @override
@@ -83,30 +89,29 @@ abstract class _$$_StreetCopyWith<$Res> implements $StreetCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_StreetCopyWithImpl<$Res> extends _$StreetCopyWithImpl<$Res>
+class __$$_StreetCopyWithImpl<$Res>
+    extends _$StreetCopyWithImpl<$Res, _$_Street>
     implements _$$_StreetCopyWith<$Res> {
   __$$_StreetCopyWithImpl(_$_Street _value, $Res Function(_$_Street) _then)
-      : super(_value, (v) => _then(v as _$_Street));
+      : super(_value, _then);
 
-  @override
-  _$_Street get _value => super._value as _$_Street;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? name = freezed,
-    Object? zone = freezed,
+    Object? id = null,
+    Object? name = null,
+    Object? zone = null,
   }) {
     return _then(_$_Street(
-      id == freezed
+      null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name == freezed
+      null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      zone == freezed
+      null == zone
           ? _value.zone
           : zone // ignore: cast_nullable_to_non_nullable
               as CityZone,
@@ -136,20 +141,17 @@ class _$_Street implements _Street {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Street &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.name, name) &&
-            const DeepCollectionEquality().equals(other.zone, zone));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.zone, zone) || other.zone == zone));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(zone));
+  int get hashCode => Object.hash(runtimeType, id, name, zone);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_StreetCopyWith<_$_Street> get copyWith =>
       __$$_StreetCopyWithImpl<_$_Street>(this, _$identity);
 }

@@ -1,9 +1,14 @@
 import 'package:falotier/domain/city_zones/interfaces.dart';
 import 'package:falotier/infrastructure/logger_factory.dart';
 import 'package:falotier/infrastructure/remote_call_emulator.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../city_zone.dart';
 import '../street.dart';
+
+final cityZoneRemoteRepositoryMockProvider =
+    Provider((ref) => CityZoneRemoteRepositoryMock());
 
 class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
   static final _log = LoggerFactory.logger('CityZoneRepository');
@@ -13,12 +18,12 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
 
   final _emulator = RemoteCallEmulator();
 
-  final List<CityZone> _zones = [defaultZone];
+  final IList<CityZone> _zones = IList<CityZone>(const [defaultZone]);
 
-  late Map<CityZone, List<Street>> _streetByZone = _createStreets();
+  late final Map<CityZone, IList<Street>> _streetByZone = _createStreets();
 
   @override
-  Future<List<CityZone>> getAvailableZones() async {
+  Future<IList<CityZone>> getAvailableZones() async {
     _log.i('getAvailableZones');
     await _emulator.makeRemoteCall();
     _log.listCount(_zones);
@@ -26,7 +31,7 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
   }
 
   @override
-  Future<List<Street>> getZoneStreets(CityZone zone) async {
+  Future<IList<Street>> getZoneStreets(CityZone zone) async {
     _log.i('getZoneStreets( $zone )');
     await _emulator.makeRemoteCall();
     final streets = _streetByZone[zone]!;
@@ -34,9 +39,9 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
     return streets;
   }
 
-  Map<CityZone, List<Street>> _createStreets() {
+  Map<CityZone, IList<Street>> _createStreets() {
     return {
-      defaultZone: List<Street>.unmodifiable([
+      defaultZone: IList<Street>([
         _createStreet('Rue Nollet'),
         _createStreet('Rue des Batignolles'),
         _createStreet('Rue Legendre'),

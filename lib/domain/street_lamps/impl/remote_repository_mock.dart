@@ -4,6 +4,7 @@ import 'package:falotier/domain/city_zones/street.dart';
 import 'package:falotier/infrastructure/exceptions.dart';
 import 'package:falotier/infrastructure/logger_factory.dart';
 import 'package:falotier/infrastructure/remote_call_emulator.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import '../interfaces.dart';
 import '../street_lamp.dart';
@@ -31,7 +32,7 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
   }
 
   @override
-  Future<StreetLamp> get(int id) async {
+  Future<StreetLamp> get(String id) async {
     _log.i('get( $id )');
 
     await _emulator.makeRemoteCall();
@@ -47,13 +48,13 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
   }
 
   @override
-  Future<List<StreetLamp>> getList(CityZone zone) async {
+  Future<IList<StreetLamp>> getList(CityZone zone) async {
     _log.i('getList( $zone )');
 
     await _emulator.makeRemoteCall();
     await _createLampsIfNeeded();
 
-    return _zoneLamps![zone]!.values.toList();
+    return _zoneLamps![zone]!.values.toIList();
   }
 
   @override

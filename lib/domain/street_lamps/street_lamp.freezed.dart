@@ -29,46 +29,51 @@ mixin _$StreetLamp {
 abstract class $StreetLampCopyWith<$Res> {
   factory $StreetLampCopyWith(
           StreetLamp value, $Res Function(StreetLamp) then) =
-      _$StreetLampCopyWithImpl<$Res>;
+      _$StreetLampCopyWithImpl<$Res, StreetLamp>;
+  @useResult
   $Res call({String id, Street street, bool isLit});
 
   $StreetCopyWith<$Res> get street;
 }
 
 /// @nodoc
-class _$StreetLampCopyWithImpl<$Res> implements $StreetLampCopyWith<$Res> {
+class _$StreetLampCopyWithImpl<$Res, $Val extends StreetLamp>
+    implements $StreetLampCopyWith<$Res> {
   _$StreetLampCopyWithImpl(this._value, this._then);
 
-  final StreetLamp _value;
   // ignore: unused_field
-  final $Res Function(StreetLamp) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? street = freezed,
-    Object? isLit = freezed,
+    Object? id = null,
+    Object? street = null,
+    Object? isLit = null,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      street: street == freezed
+      street: null == street
           ? _value.street
           : street // ignore: cast_nullable_to_non_nullable
               as Street,
-      isLit: isLit == freezed
+      isLit: null == isLit
           ? _value.isLit
           : isLit // ignore: cast_nullable_to_non_nullable
               as bool,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $StreetCopyWith<$Res> get street {
     return $StreetCopyWith<$Res>(_value.street, (value) {
-      return _then(_value.copyWith(street: value));
+      return _then(_value.copyWith(street: value) as $Val);
     });
   }
 }
@@ -80,6 +85,7 @@ abstract class _$$_StreetLampCopyWith<$Res>
           _$_StreetLamp value, $Res Function(_$_StreetLamp) then) =
       __$$_StreetLampCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String id, Street street, bool isLit});
 
   @override
@@ -87,31 +93,30 @@ abstract class _$$_StreetLampCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_StreetLampCopyWithImpl<$Res> extends _$StreetLampCopyWithImpl<$Res>
+class __$$_StreetLampCopyWithImpl<$Res>
+    extends _$StreetLampCopyWithImpl<$Res, _$_StreetLamp>
     implements _$$_StreetLampCopyWith<$Res> {
   __$$_StreetLampCopyWithImpl(
       _$_StreetLamp _value, $Res Function(_$_StreetLamp) _then)
-      : super(_value, (v) => _then(v as _$_StreetLamp));
+      : super(_value, _then);
 
-  @override
-  _$_StreetLamp get _value => super._value as _$_StreetLamp;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? street = freezed,
-    Object? isLit = freezed,
+    Object? id = null,
+    Object? street = null,
+    Object? isLit = null,
   }) {
     return _then(_$_StreetLamp(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      street: street == freezed
+      street: null == street
           ? _value.street
           : street // ignore: cast_nullable_to_non_nullable
               as Street,
-      isLit: isLit == freezed
+      isLit: null == isLit
           ? _value.isLit
           : isLit // ignore: cast_nullable_to_non_nullable
               as bool,
@@ -142,20 +147,17 @@ class _$_StreetLamp implements _StreetLamp {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_StreetLamp &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.street, street) &&
-            const DeepCollectionEquality().equals(other.isLit, isLit));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.street, street) || other.street == street) &&
+            (identical(other.isLit, isLit) || other.isLit == isLit));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(street),
-      const DeepCollectionEquality().hash(isLit));
+  int get hashCode => Object.hash(runtimeType, id, street, isLit);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_StreetLampCopyWith<_$_StreetLamp> get copyWith =>
       __$$_StreetLampCopyWithImpl<_$_StreetLamp>(this, _$identity);
 }
