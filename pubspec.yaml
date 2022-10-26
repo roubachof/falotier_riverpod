@@ -44,7 +44,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  otio_design:
+  falotier_design:
     path: packages/falotier_design
 
   build_runner: ^2.3.2

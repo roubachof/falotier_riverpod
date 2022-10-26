@@ -71,9 +71,11 @@ class StreetLampState extends _$StreetLampState {
     }
 
     final streetLamp = state.value!;
+    final updatedStreetLamp = streetLamp.copyWith(isLit: isLit);
     final zoneStreetLamps = ref
         .read(zoneStreetLampsProvider(zone: streetLamp.street.zone).notifier);
 
-    await zoneStreetLamps.addOrUpdate(streetLamp);
+    await zoneStreetLamps.addOrUpdate(updatedStreetLamp);
+    state = AsyncData(updatedStreetLamp);
   }
 }

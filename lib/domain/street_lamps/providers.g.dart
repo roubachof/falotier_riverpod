@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $ZoneStreetLampsHash() => r'6f9e41f41b2889d5c91e32522724431fd95762e3';
+String $ZoneStreetLampsHash() => r'e53e788804fb825b4498c2f72876d6f16adda190';
 
 /// See also [ZoneStreetLamps].
 class ZoneStreetLampsProvider extends AutoDisposeAsyncNotifierProviderImpl<
@@ -117,7 +117,7 @@ abstract class _$ZoneStreetLamps
   });
 }
 
-String $StreetLampStateHash() => r'6314cd590e50885d22fa1d1ce8785ab566f9f862';
+String $StreetLampStateHash() => r'4609565225fd112bd67e39d2b5d42c7a192cc9e0';
 
 /// See also [StreetLampState].
 class StreetLampStateProvider

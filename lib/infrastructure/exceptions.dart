@@ -5,6 +5,6 @@ class ItemNotFoundException implements Exception {
 
   @override
   String toString() {
-    return 'Item with key: $key wasn' 't find';
+    return 'Item with key $key wasn\'t found';
   }
 }

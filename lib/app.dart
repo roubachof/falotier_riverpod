@@ -14,6 +14,10 @@ class App extends StatelessWidget {
       child: MaterialApp.router(
         routerConfig: _router,
         title: 'falotier',
+        theme: ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.dark,
+        ),
       ),
     );
   }
