@@ -15,6 +15,6 @@ final streetLampRemoteRepositoryProvider = Provider((ref) =>
 abstract class StreetLampRemoteRepository {
   Future<StreetLamp> get(String id);
   Future<IList<StreetLamp>> getList(CityZone zone);
-  Future addOrUpdate(StreetLamp streetLamp);
+  Future<StreetLamp> addOrUpdate(StreetLamp streetLamp);
   Future remove(StreetLamp streetLamp);
 }

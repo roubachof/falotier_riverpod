@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:falotier/domain/city_zones/city_zone.dart';
 import 'package:falotier/domain/city_zones/impl/remote_repository_mock.dart';
 import 'package:falotier/domain/city_zones/street.dart';
@@ -22,13 +24,19 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
   StreetLampRemoteRepositoryMock(this._cityZoneRemoteRepositoryMock);
 
   @override
-  Future addOrUpdate(StreetLamp streetLamp) async {
+  Future<StreetLamp> addOrUpdate(StreetLamp streetLamp) async {
     _log.i('addOrUpdate( $streetLamp )');
 
     await _emulator.makeRemoteCall();
     await _createLampsIfNeeded();
 
+    if (streetLamp.id == 'new') {
+      streetLamp = streetLamp.copyWith(id: (_nextId++).toString());
+    }
+
     _zoneLamps![streetLamp.street.zone]![streetLamp.id] = streetLamp;
+
+    return streetLamp;
   }
 
   @override
@@ -72,15 +80,23 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
       return;
     }
 
+    final random = Random();
     final zoneLamps = Map<CityZone, Map<String, StreetLamp>>.identity();
     for (final zone
         in await _cityZoneRemoteRepositoryMock.getAvailableZones()) {
       final streets = await _cityZoneRemoteRepositoryMock.getZoneStreets(zone);
-      zoneLamps[zone] = Map<String, StreetLamp>.fromEntries(streets.map((s) {
-        final streetLamp =
-            _create(s, isLit: DateTime.now().millisecond % 2 == 0);
-        return MapEntry(streetLamp.id, streetLamp);
-      }));
+      zoneLamps[zone] = Map<String, StreetLamp>.fromEntries(
+        streets
+            .where(
+          (element) => random.nextBool(),
+        )
+            .map(
+          (s) {
+            final streetLamp = _create(s, isLit: random.nextBool());
+            return MapEntry(streetLamp.id, streetLamp);
+          },
+        ),
+      );
     }
 
     _zoneLamps = zoneLamps;

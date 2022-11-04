@@ -29,21 +29,21 @@ class _SystemHash {
   }
 }
 
-String $availableZonesHash() => r'5215770bfa2eaa29b2cfcc5eaeb15ef220fc6358';
+String $availableZonesHash() => r'f668f26e203866029cc5e5e84a9f8631c4b1fb2c';
 
 /// See also [availableZones].
-final availableZonesProvider = AutoDisposeFutureProvider<IList<CityZone>>(
+final availableZonesProvider = FutureProvider<IList<CityZone>>(
   availableZones,
   name: r'availableZonesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : $availableZonesHash,
 );
-typedef AvailableZonesRef = AutoDisposeFutureProviderRef<IList<CityZone>>;
-String $streetsHash() => r'bf6667eb0a6c8b0185cde7f061ddc771a8ab9f3e';
+typedef AvailableZonesRef = FutureProviderRef<IList<CityZone>>;
+String $streetsHash() => r'7c0ba00f9ce79466720c4af5be70fa9925219895';
 
 /// See also [streets].
-class StreetsProvider extends AutoDisposeFutureProvider<IList<Street>> {
+class StreetsProvider extends FutureProvider<IList<Street>> {
   StreetsProvider({
     required this.zone,
   }) : super(
@@ -75,7 +75,7 @@ class StreetsProvider extends AutoDisposeFutureProvider<IList<Street>> {
   }
 }
 
-typedef StreetsRef = AutoDisposeFutureProviderRef<IList<Street>>;
+typedef StreetsRef = FutureProviderRef<IList<Street>>;
 
 /// See also [streets].
 final streetsProvider = StreetsFamily();
@@ -92,7 +92,7 @@ class StreetsFamily extends Family<AsyncValue<IList<Street>>> {
   }
 
   @override
-  AutoDisposeFutureProvider<IList<Street>> getProviderOverride(
+  FutureProvider<IList<Street>> getProviderOverride(
     covariant StreetsProvider provider,
   ) {
     return call(
@@ -108,4 +108,74 @@ class StreetsFamily extends Family<AsyncValue<IList<Street>>> {
 
   @override
   String? get name => r'streetsProvider';
+}
+
+String $availableStreetsHash() => r'0c7b3d57331cc6015dc5da3f300b5332895556cc';
+
+/// See also [availableStreets].
+class AvailableStreetsProvider extends FutureProvider<IList<Street>> {
+  AvailableStreetsProvider({
+    required this.zone,
+  }) : super(
+          (ref) => availableStreets(
+            ref,
+            zone: zone,
+          ),
+          from: availableStreetsProvider,
+          name: r'availableStreetsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : $availableStreetsHash,
+        );
+
+  final CityZone zone;
+
+  @override
+  bool operator ==(Object other) {
+    return other is AvailableStreetsProvider && other.zone == zone;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, zone.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef AvailableStreetsRef = FutureProviderRef<IList<Street>>;
+
+/// See also [availableStreets].
+final availableStreetsProvider = AvailableStreetsFamily();
+
+class AvailableStreetsFamily extends Family<AsyncValue<IList<Street>>> {
+  AvailableStreetsFamily();
+
+  AvailableStreetsProvider call({
+    required CityZone zone,
+  }) {
+    return AvailableStreetsProvider(
+      zone: zone,
+    );
+  }
+
+  @override
+  FutureProvider<IList<Street>> getProviderOverride(
+    covariant AvailableStreetsProvider provider,
+  ) {
+    return call(
+      zone: provider.zone,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'availableStreetsProvider';
 }

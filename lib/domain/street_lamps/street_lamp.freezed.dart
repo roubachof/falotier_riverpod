@@ -126,9 +126,10 @@ class __$$_StreetLampCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_StreetLamp implements _StreetLamp {
+class _$_StreetLamp extends _StreetLamp {
   const _$_StreetLamp(
-      {required this.id, required this.street, required this.isLit});
+      {required this.id, required this.street, required this.isLit})
+      : super._();
 
   @override
   final String id;
@@ -136,11 +137,6 @@ class _$_StreetLamp implements _StreetLamp {
   final Street street;
   @override
   final bool isLit;
-
-  @override
-  String toString() {
-    return 'StreetLamp(id: $id, street: $street, isLit: $isLit)';
-  }
 
   @override
   bool operator ==(dynamic other) {
@@ -162,11 +158,12 @@ class _$_StreetLamp implements _StreetLamp {
       __$$_StreetLampCopyWithImpl<_$_StreetLamp>(this, _$identity);
 }
 
-abstract class _StreetLamp implements StreetLamp {
+abstract class _StreetLamp extends StreetLamp {
   const factory _StreetLamp(
       {required final String id,
       required final Street street,
       required final bool isLit}) = _$_StreetLamp;
+  const _StreetLamp._() : super._();
 
   @override
   String get id;

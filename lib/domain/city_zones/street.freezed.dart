@@ -17,8 +17,11 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$Street {
   String get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
   CityZone get zone => throw _privateConstructorUsedError;
+  int get districtNumber => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  String get imageAsset => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $StreetCopyWith<Street> get copyWith => throw _privateConstructorUsedError;
@@ -29,7 +32,13 @@ abstract class $StreetCopyWith<$Res> {
   factory $StreetCopyWith(Street value, $Res Function(Street) then) =
       _$StreetCopyWithImpl<$Res, Street>;
   @useResult
-  $Res call({String id, String name, CityZone zone});
+  $Res call(
+      {String id,
+      CityZone zone,
+      int districtNumber,
+      String name,
+      String description,
+      String imageAsset});
 
   $CityZoneCopyWith<$Res> get zone;
 }
@@ -48,22 +57,37 @@ class _$StreetCopyWithImpl<$Res, $Val extends Street>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
     Object? zone = null,
+    Object? districtNumber = null,
+    Object? name = null,
+    Object? description = null,
+    Object? imageAsset = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
       zone: null == zone
           ? _value.zone
           : zone // ignore: cast_nullable_to_non_nullable
               as CityZone,
+      districtNumber: null == districtNumber
+          ? _value.districtNumber
+          : districtNumber // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      imageAsset: null == imageAsset
+          ? _value.imageAsset
+          : imageAsset // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 
@@ -82,7 +106,13 @@ abstract class _$$_StreetCopyWith<$Res> implements $StreetCopyWith<$Res> {
       __$$_StreetCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, CityZone zone});
+  $Res call(
+      {String id,
+      CityZone zone,
+      int districtNumber,
+      String name,
+      String description,
+      String imageAsset});
 
   @override
   $CityZoneCopyWith<$Res> get zone;
@@ -99,41 +129,64 @@ class __$$_StreetCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
     Object? zone = null,
+    Object? districtNumber = null,
+    Object? name = null,
+    Object? description = null,
+    Object? imageAsset = null,
   }) {
     return _then(_$_Street(
       null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
       null == zone
           ? _value.zone
           : zone // ignore: cast_nullable_to_non_nullable
               as CityZone,
+      null == districtNumber
+          ? _value.districtNumber
+          : districtNumber // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == imageAsset
+          ? _value.imageAsset
+          : imageAsset // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Street implements _Street {
-  const _$_Street(this.id, this.name, this.zone);
+class _$_Street extends _Street {
+  _$_Street(this.id, this.zone, this.districtNumber, this.name,
+      this.description, this.imageAsset)
+      : super._();
 
   @override
   final String id;
   @override
+  final CityZone zone;
+  @override
+  final int districtNumber;
+  @override
   final String name;
   @override
-  final CityZone zone;
+  final String description;
+  @override
+  final String imageAsset;
 
   @override
   String toString() {
-    return 'Street(id: $id, name: $name, zone: $zone)';
+    return 'Street(id: $id, zone: $zone, districtNumber: $districtNumber, name: $name, description: $description, imageAsset: $imageAsset)';
   }
 
   @override
@@ -142,12 +195,19 @@ class _$_Street implements _Street {
         (other.runtimeType == runtimeType &&
             other is _$_Street &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.zone, zone) || other.zone == zone) &&
+            (identical(other.districtNumber, districtNumber) ||
+                other.districtNumber == districtNumber) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.zone, zone) || other.zone == zone));
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.imageAsset, imageAsset) ||
+                other.imageAsset == imageAsset));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, zone);
+  int get hashCode => Object.hash(
+      runtimeType, id, zone, districtNumber, name, description, imageAsset);
 
   @JsonKey(ignore: true)
   @override
@@ -156,16 +216,28 @@ class _$_Street implements _Street {
       __$$_StreetCopyWithImpl<_$_Street>(this, _$identity);
 }
 
-abstract class _Street implements Street {
-  const factory _Street(
-      final String id, final String name, final CityZone zone) = _$_Street;
+abstract class _Street extends Street {
+  factory _Street(
+      final String id,
+      final CityZone zone,
+      final int districtNumber,
+      final String name,
+      final String description,
+      final String imageAsset) = _$_Street;
+  _Street._() : super._();
 
   @override
   String get id;
   @override
+  CityZone get zone;
+  @override
+  int get districtNumber;
+  @override
   String get name;
   @override
-  CityZone get zone;
+  String get description;
+  @override
+  String get imageAsset;
   @override
   @JsonKey(ignore: true)
   _$$_StreetCopyWith<_$_Street> get copyWith =>

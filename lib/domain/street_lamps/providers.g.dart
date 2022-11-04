@@ -29,11 +29,11 @@ class _SystemHash {
   }
 }
 
-String $ZoneStreetLampsHash() => r'e53e788804fb825b4498c2f72876d6f16adda190';
+String $ZoneStreetLampsHash() => r'0b340cc3cf74a1c423c353215e7642c032859fa8';
 
 /// See also [ZoneStreetLamps].
-class ZoneStreetLampsProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    ZoneStreetLamps, IList<StreetLamp>> {
+class ZoneStreetLampsProvider
+    extends AsyncNotifierProviderImpl<ZoneStreetLamps, IList<StreetLamp>> {
   ZoneStreetLampsProvider({
     required this.zone,
   }) : super(
@@ -71,8 +71,7 @@ class ZoneStreetLampsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
-typedef ZoneStreetLampsRef
-    = AutoDisposeAsyncNotifierProviderRef<IList<StreetLamp>>;
+typedef ZoneStreetLampsRef = AsyncNotifierProviderRef<IList<StreetLamp>>;
 
 /// See also [ZoneStreetLamps].
 final zoneStreetLampsProvider = ZoneStreetLampsFamily();
@@ -89,7 +88,7 @@ class ZoneStreetLampsFamily extends Family<AsyncValue<IList<StreetLamp>>> {
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderImpl<ZoneStreetLamps, IList<StreetLamp>>
+  AsyncNotifierProviderImpl<ZoneStreetLamps, IList<StreetLamp>>
       getProviderOverride(
     covariant ZoneStreetLampsProvider provider,
   ) {
@@ -109,7 +108,7 @@ class ZoneStreetLampsFamily extends Family<AsyncValue<IList<StreetLamp>>> {
 }
 
 abstract class _$ZoneStreetLamps
-    extends BuildlessAutoDisposeAsyncNotifier<IList<StreetLamp>> {
+    extends BuildlessAsyncNotifier<IList<StreetLamp>> {
   late final CityZone zone;
 
   FutureOr<IList<StreetLamp>> build({
@@ -117,11 +116,11 @@ abstract class _$ZoneStreetLamps
   });
 }
 
-String $StreetLampStateHash() => r'4609565225fd112bd67e39d2b5d42c7a192cc9e0';
+String $StreetLampStateHash() => r'3d7395555f4f7560ef3e6f330d646ebdbcaeb1c9';
 
 /// See also [StreetLampState].
 class StreetLampStateProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<StreetLampState, StreetLamp> {
+    extends AsyncNotifierProviderImpl<StreetLampState, StreetLamp> {
   StreetLampStateProvider({
     required this.id,
   }) : super(
@@ -159,7 +158,7 @@ class StreetLampStateProvider
   }
 }
 
-typedef StreetLampStateRef = AutoDisposeAsyncNotifierProviderRef<StreetLamp>;
+typedef StreetLampStateRef = AsyncNotifierProviderRef<StreetLamp>;
 
 /// See also [StreetLampState].
 final streetLampStateProvider = StreetLampStateFamily();
@@ -176,8 +175,7 @@ class StreetLampStateFamily extends Family<AsyncValue<StreetLamp>> {
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderImpl<StreetLampState, StreetLamp>
-      getProviderOverride(
+  AsyncNotifierProviderImpl<StreetLampState, StreetLamp> getProviderOverride(
     covariant StreetLampStateProvider provider,
   ) {
     return call(
@@ -195,8 +193,7 @@ class StreetLampStateFamily extends Family<AsyncValue<StreetLamp>> {
   String? get name => r'streetLampStateProvider';
 }
 
-abstract class _$StreetLampState
-    extends BuildlessAutoDisposeAsyncNotifier<StreetLamp> {
+abstract class _$StreetLampState extends BuildlessAsyncNotifier<StreetLamp> {
   late final String id;
 
   FutureOr<StreetLamp> build({

@@ -11,7 +11,11 @@ class LoggerFactory {
     return Logger(
         printer: TagPrinter(
             HybridPrinter(
-              PrettyPrinter(colors: Platform.isAndroid, methodCount: 30),
+              PrettyPrinter(
+                colors: Platform.isAndroid,
+                methodCount: 30,
+                printTime: true,
+              ),
               debug: SimplePrinter(colors: Platform.isAndroid),
               info: SimplePrinter(colors: Platform.isAndroid),
             ),

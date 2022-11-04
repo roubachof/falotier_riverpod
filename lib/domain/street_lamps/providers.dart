@@ -10,50 +10,47 @@ import 'street_lamp.dart';
 
 part 'providers.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ZoneStreetLamps extends _$ZoneStreetLamps {
   static final _log = LoggerFactory.logger('ZoneStreetLampsProvider');
 
   late StreetLampRemoteRepository _repository;
 
   @override
-  Future<IList<StreetLamp>> build({required CityZone zone}) {
-    _log.i('build( $zone )');
+  Future<IList<StreetLamp>> build({required CityZone zone}) async {
+    _log.i(
+        'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
 
     _repository = ref.read(streetLampRemoteRepositoryProvider);
-    return _repository.getList(zone);
+    final lamps = await _repository.getList(zone);
+    return lamps.sort(streetLampComparator);
   }
 
   Future addOrUpdate(StreetLamp streetLamp) async {
     _log.i('addOrUpdate( $streetLamp )');
 
-    await _repository.addOrUpdate(streetLamp);
+    final updatedLamp = await _repository.addOrUpdate(streetLamp);
 
-    if (!state.hasValue) {
-      return;
-    }
-
-    final list = state.value!;
-    final updatedList = list.updateById([streetLamp], (item) => item.id);
-    state = AsyncData(updatedList);
+    await update((currentList) {
+      final updatedList =
+          currentList.updateById([updatedLamp], (item) => item.id);
+      return currentList.length != updatedList.length
+          ? updatedList.sort(streetLampComparator)
+          : updatedList;
+    });
   }
 
   Future remove(StreetLamp streetLamp) async {
     _log.i('remove( $streetLamp )');
     await _repository.remove(streetLamp);
 
-    if (!state.hasValue) {
-      return;
-    }
-
-    final list = state.value!;
-    final updatedList =
-        list.removeWhere((element) => element.id == streetLamp.id);
-    state = AsyncData(updatedList);
+    await update((currentList) {
+      return currentList.removeWhere((element) => element.id == streetLamp.id);
+    });
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class StreetLampState extends _$StreetLampState {
   static final _log = LoggerFactory.logger('StreetLampStateProvider');
 
@@ -73,7 +70,7 @@ class StreetLampState extends _$StreetLampState {
     final streetLamp = state.value!;
     final updatedStreetLamp = streetLamp.copyWith(isLit: isLit);
     final zoneStreetLamps = ref
-        .read(zoneStreetLampsProvider(zone: streetLamp.street.zone).notifier);
+        .watch(zoneStreetLampsProvider(zone: streetLamp.street.zone).notifier);
 
     await zoneStreetLamps.addOrUpdate(updatedStreetLamp);
     state = AsyncData(updatedStreetLamp);
