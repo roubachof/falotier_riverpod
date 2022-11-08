@@ -45,7 +45,7 @@ abstract class _$SelectedZone extends AsyncNotifier<CityZone> {
   FutureOr<CityZone> build();
 }
 
-String $LampListHash() => r'688f5c3f997497972032d9a017a8bb2dce45f6b7';
+String $LampListHash() => r'c5695725aaa1a86c19e2d4609ad02737d32914ee';
 
 /// See also [LampList].
 final lampListProvider = AsyncNotifierProvider<LampList, IList<StreetLamp>>(

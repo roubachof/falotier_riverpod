@@ -21,7 +21,7 @@ class StreetLampList extends ConsumerWidget {
     return AsyncValueWidget<IList<StreetLamp>>(
       lampListAsyncValue,
       asSlivers: true,
-      onErrorButtonTap: () => ref.refresh(lampListProvider),
+      onErrorButtonTap: () => ref.read(lampListProvider.notifier).reload(),
       childBuilder: (data) {
         return DiffUtilSliverList.fromKeyedWidgetList(
           children: data.map((lamp) {

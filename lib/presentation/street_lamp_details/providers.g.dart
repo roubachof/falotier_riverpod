@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $LampDetailsHash() => r'fdaa98e6e0ebd05a0885b26958c26f9a7af1a686';
+String $LampDetailsHash() => r'31feb6cbd224ed60b88a5e1af1ae4ed77925c4fc';
 
 /// See also [LampDetails].
 class LampDetailsProvider

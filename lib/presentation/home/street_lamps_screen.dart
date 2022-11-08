@@ -23,7 +23,7 @@ class StreetLampsScreen extends ConsumerWidget {
         child: RefreshIndicator(
           color: theme.colors.accent,
           notificationPredicate: (_) => ref.read(lampListProvider).hasValue,
-          onRefresh: () => ref.refresh(lampListProvider.future),
+          onRefresh: () => ref.read(lampListProvider.notifier).refresh(),
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(

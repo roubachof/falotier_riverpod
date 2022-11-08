@@ -53,18 +53,28 @@ class LampList extends _$LampList {
     _log.i(
         'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
 
-    if (state.isRefreshing) {
-      ref.invalidate(availableZonesProvider);
-      if (selectedZone != null) {
-        ref.invalidate(zoneStreetLampsProvider(zone: selectedZone!));
-      }
-    }
     selectedZone = await ref.watch(selectedZoneProvider.future);
     final list =
         await ref.watch(zoneStreetLampsProvider(zone: selectedZone!).future);
 
     _log.listCount(list);
     return list;
+  }
+
+  Future refresh() {
+    _log.i('refresh()');
+
+    ref.invalidate(zoneStreetLampsProvider(zone: selectedZone!));
+    return ref.refresh(lampListProvider.future);
+  }
+
+  void reload() {
+    _log.i('reload()');
+
+    ref.refresh(availableZonesProvider);
+    if (selectedZone != null) {
+      ref.refresh(zoneStreetLampsProvider(zone: selectedZone!));
+    }
   }
 
   Future addOrUpdate(StreetLamp streetLamp) async {

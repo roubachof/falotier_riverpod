@@ -25,7 +25,7 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
   @override
   Future<IList<CityZone>> getAvailableZones() async {
     _log.i('getAvailableZones');
-    await _emulator.makeRemoteCall();
+    await _emulator.makeRemoteCallWith(exceptionProbability: 0.1);
     _log.listCount(_zones);
     return _zones;
   }
@@ -33,7 +33,7 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
   @override
   Future<IList<Street>> getZoneStreets(CityZone zone) async {
     _log.i('getZoneStreets( $zone )');
-    await _emulator.makeRemoteCall();
+    await _emulator.makeRemoteCallWith(exceptionProbability: 0);
     final streets = _streetByZone[zone]!;
     _log.listCount(streets);
     return streets;
