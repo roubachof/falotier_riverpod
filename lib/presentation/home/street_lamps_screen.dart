@@ -14,6 +14,8 @@ class StreetLampsScreen extends ConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = AppTheme.of(context);
+    final safePaddingTop = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: theme.colors.background,
       floatingActionButton: AddStreetFloatingButton(theme: theme),
@@ -24,64 +26,85 @@ class StreetLampsScreen extends ConsumerWidget {
           onRefresh: () => ref.refresh(lampListProvider.future),
           child: CustomScrollView(
             slivers: [
-              SliverSafeArea(
-                sliver: SliverToBoxAdapter(
-                  child: Stack(
-                    children: [
-                      AppPadding(
-                        padding: const AppEdgeInsets.regular(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const AppText.pageTitle('Falotier'),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 100),
-                              child: AppText.subtitleLarge(
-                                'A state management poc, with a high hat.',
-                                maxLines: 2,
-                              ),
+              SliverToBoxAdapter(
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const AppEdgeInsets.regular()
+                          .toEdgeInsets(theme)
+                          .add(EdgeInsets.only(top: safePaddingTop)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText.pageTitle(
+                            'Falotier',
+                            color: theme.colors.accent,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 100),
+                            child: AppText.subtitleLarge(
+                              'A state management PoC, with a top hat.',
+                              maxLines: 2,
                             ),
-                            const AppGap(AppGapSize.regular),
-                            const AppText.paragraphLarge(
-                                'The purpose of this PoC is to implement all real life app '
-                                'scenarios and see if the selected state management library '
-                                'elegantly supports all the needed mutations.'),
-                            const AppGap(AppGapSize.regular),
-                            SizedBox(
-                              height: 50,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  AppText.paragraphLarge('City'),
-                                  AppGap(AppGapSize.regular),
-                                  CityDropDown(),
-                                ],
-                              ),
-                            )
+                          ),
+                          const AppGap(AppGapSize.semiBig),
+                          const AppText.paragraphLarge(
+                              'The purpose of this PoC is to implement all real life app '
+                              'scenarios and see if the selected state management library '
+                              'elegantly supports all the needed mutations.'),
+                          const AppGap(AppGapSize.regular),
+                          SizedBox(
+                            height: 50,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const AppText.subtitleMedium('City'),
+                                const AppGap(AppGapSize.regular),
+                                const CityDropDown(),
+                                const Spacer(),
+                                Chip(
+                                    backgroundColor: theme.colors.accent,
+                                    label: AppText.paragraphLarge(
+                                      'Riverpod',
+                                      color: theme.colors.onAccent,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: safePaddingTop,
+                      right: 0,
+                      child: Assets.appImage(Images.moon, 100, 100),
+                    ),
+                    Positioned(
+                      top: safePaddingTop,
+                      right: 0,
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 200,
+                              spreadRadius: 30,
+                              offset: Offset.zero,
+                              blurStyle: BlurStyle.normal,
+                              color: theme.colors.foreground.withOpacity(0.7),
+                            ),
                           ],
                         ),
                       ),
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 200,
-                                spreadRadius: 30,
-                                offset: Offset.zero,
-                                blurStyle: BlurStyle.normal,
-                                color: theme.colors.foreground,
-                              ),
-                            ],
-                          ),
-                          child: Assets.appImage(Images.moon, 100, 100),
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: theme.spacing.regular,
                 ),
               ),
               const StreetLampList(),

@@ -42,7 +42,7 @@ class AddStreetScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: StreetList(),
+      body: const StreetList(),
     );
   }
 }

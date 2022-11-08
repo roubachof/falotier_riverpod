@@ -29,7 +29,7 @@ class _IconButtonCommandState extends State<IconButtonCommand> {
         child: SizedBox(
           height: theme.icons.sizes.regular,
           width: theme.icons.sizes.regular,
-          child: const LoadingWidget(),
+          child: const AppLoadingWidget(),
         ),
       );
     }

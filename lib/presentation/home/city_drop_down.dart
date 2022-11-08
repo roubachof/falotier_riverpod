@@ -25,14 +25,14 @@ class CityDropDown extends ConsumerWidget {
           items: zones.map<DropdownMenuItem<CityZone>>((zone) {
             return DropdownMenuItem<CityZone>(
               value: zone,
-              child: AppText.paragraphLarge(zone.name),
+              child: AppText.subtitleMedium(zone.name),
             );
           }).toList(),
           onChanged: (zone) => selectedZoneNotifier.select(zone!),
         );
       },
       error: (_, __) {
-        return const AppText.paragraphLarge('ERROR');
+        return const AppText.subtitleMedium('ERROR');
       },
       loading: () {
         return TweenAnimationBuilder<int>(
@@ -51,7 +51,7 @@ class CityDropDown extends ConsumerWidget {
               dots = '.';
             }
 
-            return AppText.paragraphLarge('Loading$dots');
+            return AppText.subtitleMedium('Loading$dots');
           },
         );
       },

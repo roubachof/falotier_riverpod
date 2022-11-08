@@ -29,7 +29,8 @@ class StreetList extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: const [
-            LoadingWidget(),
+            AppLoadingWidget(),
+            AppGap.regular(),
             AppText.paragraphMedium('Street is being added'),
           ],
         ),

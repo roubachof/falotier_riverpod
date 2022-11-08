@@ -93,7 +93,7 @@ class StreetLampTile extends StatelessWidget {
         : theme.colors.foregroundAtNoon;
 
     return AppContainer(
-      height: 100,
+      height: 115,
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fitWidth,
@@ -121,8 +121,8 @@ class StreetLampTile extends StatelessWidget {
               gradient: _buildGradient(),
             ),
             padding: const AppEdgeInsets.symmetric(
-              vertical: AppGapSize.small,
-              horizontal: AppGapSize.small,
+              vertical: AppGapSize.regular,
+              horizontal: AppGapSize.regular,
             ),
             child: InkWell(
               onTap: onTap,
@@ -144,10 +144,13 @@ class StreetLampTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: IconButtonCommand(
-                        iconData: Icons.close, onPressed: onRemove),
+                  Transform.translate(
+                    offset: const Offset(16, -8),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButtonCommand(
+                          iconData: Icons.close, onPressed: onRemove),
+                    ),
                   ),
                 ],
               ),

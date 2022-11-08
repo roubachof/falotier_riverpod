@@ -1,10 +1,13 @@
 import 'package:falotier/domain/street_lamps/providers.dart';
 import 'package:falotier/domain/street_lamps/street_lamp.dart';
 import 'package:falotier/presentation/common/loading_states_widgets.dart';
+import 'package:falotier/presentation/common/measure_size.dart';
 import 'package:falotier_design/falotier_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'lit_lamp_widget.dart';
 
 class StreetLampDetailsScreen extends ConsumerWidget {
   const StreetLampDetailsScreen({
@@ -20,18 +23,25 @@ class StreetLampDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = AppTheme.of(context);
 
+    final safeAreaEdges = MediaQuery.of(context).padding;
+
     return Scaffold(
       backgroundColor: theme.colors.background,
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           return SingleChildScrollView(
-            child: SafeArea(
-              child: SizedBox(
-                height: constraints.maxHeight,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Stack(
+                children: [
+                  Container(
+                    child: DetailsBody(
+                      id: streetLampId,
+                    ),
+                  ),
+                  Padding(
+                    padding: safeAreaEdges,
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppPadding(
@@ -54,13 +64,8 @@ class StreetLampDetailsScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    Expanded(
-                      child: DetailsBody(
-                        id: streetLampId,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -70,7 +75,7 @@ class StreetLampDetailsScreen extends ConsumerWidget {
   }
 }
 
-class DetailsBody extends ConsumerWidget {
+class DetailsBody extends ConsumerStatefulWidget {
   const DetailsBody({
     required this.id,
     Key? key,
@@ -79,89 +84,213 @@ class DetailsBody extends ConsumerWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState createState() => _DetailsBodyState();
+}
+
+class _DetailsBodyState extends ConsumerState<DetailsBody> {
+  Size? _bodySize;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
 
-    final lampAsyncValue = ref.watch(streetLampStateProvider(id: id));
+    final lampAsyncValue = ref.watch(streetLampStateProvider(id: widget.id));
 
     return AsyncValueConverter<StreetLamp>(
       lampAsyncValue,
-      onErrorButtonTap: () => ref.refresh(streetLampStateProvider(id: id)),
+      onErrorButtonTap: () =>
+          ref.refresh(streetLampStateProvider(id: widget.id)),
       childBuilder: (lamp) {
         final foregroundColor = !lamp.isLit
             ? theme.colors.foregroundAtNight
             : theme.colors.foregroundAtNoon;
 
-        return Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
+        return Stack(
+          children: [
+            Positioned.fill(
+                child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                  lamp.isLit
+                      ? theme.colors.enlightened
+                      : theme.colors.darkOverlay,
+                  lamp.isLit ? BlendMode.hardLight : BlendMode.srcOver),
+              child: Assets.image(
+                lamp.street.imageAsset,
                 fit: BoxFit.fitHeight,
-                image: Assets.image(lamp.street.imageAsset).image,
-                colorFilter: ColorFilter.mode(
-                    lamp.isLit
-                        ? theme.colors.enlightened
-                        : theme.colors.darkOverlay,
-                    lamp.isLit ? BlendMode.hardLight : BlendMode.srcOver),
+              ),
+            )),
+            Positioned(
+                top: 100,
+                right: 0,
+                height: 600,
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                      lamp.isLit
+                          ? theme.colors.enlightened
+                          : theme.colors.darkOverlay,
+                      BlendMode.srcATop),
+                  child: Assets.appImage(
+                    Images.lamp,
+                    null,
+                    null,
+                    fit: BoxFit.fitHeight,
+                  ),
+                )),
+            MeasureSize(
+              onChange: (size) => setState(() {
+                _bodySize = size;
+              }),
+              child: AppContainer(
+                constraints: const BoxConstraints(
+                  minHeight: 600,
+                ),
+                padding: const AppEdgeInsets.regular(),
+                decoration: BoxDecoration(
+                  gradient: _buildBeneathGradient(theme, lamp.isLit),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 300),
+                    AppText.subtitleLarge(
+                      lamp.street.districtDisplay,
+                      color: foregroundColor,
+                    ),
+                    const AppGap.regular(),
+                    AppText.paragraphLarge(
+                      lamp.street.description,
+                      softWrap: true,
+                      color: foregroundColor,
+                    ),
+                  ],
+                ),
               ),
             ),
-            child: AppContainer(
-              decoration: BoxDecoration(
-                gradient: _buildGradient(theme, lamp.isLit),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: _buildAboveGradient(theme, lamp.isLit),
+                ),
               ),
-              padding: const AppEdgeInsets.symmetric(
-                vertical: AppGapSize.small,
-                horizontal: AppGapSize.small,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 300),
-                  AppText.subtitleLarge(
-                    lamp.street.districtDisplay,
-                    color: foregroundColor,
-                  ),
-                  const AppGap.regular(),
-                  AppText.paragraphLarge(
-                    lamp.street.description,
-                    softWrap: true,
-                    color: foregroundColor,
-                  ),
-                ],
-              ),
-            ));
+            ),
+            Positioned(
+              top: 170,
+              right: 60,
+              child: LitLampWidget(id: widget.id, isLit: lamp.isLit),
+            ),
+          ],
+        );
       },
     );
   }
 
-  Gradient _buildGradient(AppThemeData theme, bool isLampLit) {
-    if (isLampLit) {
-      return RadialGradient(
-          center: const Alignment(0.7, -0.7),
-          radius: 1,
-          colors: [
-            Colors.black.withOpacity(0),
-            Colors.black.withOpacity(0.5),
-            Colors.black.withOpacity(0.7),
-            Colors.black.withOpacity(0.9),
-          ],
-          stops: const [
-            0.1,
-            0.3,
-            0.7,
-            0.9,
-          ]);
+  Alignment? _computeGradientAlignment() {
+    // print('body size = $_bodySize');
+
+    if (_bodySize == null) {
+      return null;
     }
 
-    return LinearGradient(
-        begin: const Alignment(1.0, -1.0),
-        end: const Alignment(-1.0, 1.0),
+    const double lampMarginTop = 220;
+    const double lampMarginRight = 100;
+
+    final double halfHeight = _bodySize!.height / 2;
+    final double diffHeight = halfHeight - lampMarginTop;
+    final double alignmentY = diffHeight / halfHeight;
+
+    final double halfWidth = _bodySize!.width / 2;
+    final double diffWidth = halfWidth - lampMarginRight;
+    final double alignmentX = diffWidth / halfWidth;
+
+    // print('aligmentY: $alignmentY, aligmentX: $alignmentX');
+
+    return Alignment(alignmentX, -alignmentY);
+  }
+
+  Gradient _buildBeneathGradient(AppThemeData theme, bool isLampLit) {
+    final alignment = _computeGradientAlignment();
+
+    if (alignment == null) {
+      return const RadialGradient(colors: [
+        Colors.black,
+        Colors.black,
+      ]);
+    }
+
+    if (isLampLit) {
+      return RadialGradient(
+        center: alignment,
+        radius: 1,
         colors: [
-          Colors.black.withOpacity(0.4),
+          Colors.black.withOpacity(0),
+          Colors.black.withOpacity(0.5),
+          Colors.black.withOpacity(0.7),
+          Colors.black.withOpacity(0.9),
+        ],
+        stops: const [
+          0.1,
+          0.3,
+          0.7,
+          0.9,
+        ],
+      );
+    }
+
+    return RadialGradient(
+        center: const Alignment(0.0, -1.0),
+        radius: 2,
+        colors: [
+          Colors.black.withOpacity(0),
+          Colors.black.withOpacity(0.1),
+          Colors.black.withOpacity(0.2),
+          Colors.black.withOpacity(0.5),
+        ],
+        stops: const [
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+        ]);
+  }
+
+  Gradient _buildAboveGradient(AppThemeData theme, bool isLampLit) {
+    final alignment = _computeGradientAlignment();
+
+    if (alignment == null) {
+      return const RadialGradient(colors: [
+        Colors.black,
+        Colors.black,
+      ]);
+    }
+
+    if (isLampLit) {
+      return RadialGradient(center: alignment, radius: 1, colors: [
+        Colors.black.withOpacity(0),
+        Colors.black.withOpacity(0.2),
+        Colors.black.withOpacity(0.4),
+        Colors.black.withOpacity(0.6),
+      ], stops: const [
+        0.1,
+        0.3,
+        0.7,
+        0.9,
+      ]);
+    }
+
+    return RadialGradient(
+        center: const Alignment(0.0, -1.0),
+        radius: 2,
+        colors: [
+          Colors.black.withOpacity(0.3),
           Colors.black.withOpacity(0.8),
+          Colors.black.withOpacity(0.9),
+          Colors.black.withOpacity(1),
         ],
         stops: const [
           0.3,
           0.5,
+          0.7,
+          0.9,
         ]);
   }
 }
