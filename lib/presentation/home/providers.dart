@@ -46,7 +46,7 @@ class SelectedZone extends _$SelectedZone {
 class LampList extends _$LampList {
   static final _log = LoggerFactory.logger('LampListProvider');
 
-  late CityZone selectedZone;
+  CityZone? selectedZone;
 
   @override
   Future<IList<StreetLamp>> build() async {
@@ -54,11 +54,14 @@ class LampList extends _$LampList {
         'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
 
     if (state.isRefreshing) {
-      ref.invalidate(zoneStreetLampsProvider(zone: selectedZone));
+      ref.invalidate(availableZonesProvider);
+      if (selectedZone != null) {
+        ref.invalidate(zoneStreetLampsProvider(zone: selectedZone!));
+      }
     }
     selectedZone = await ref.watch(selectedZoneProvider.future);
     final list =
-        await ref.watch(zoneStreetLampsProvider(zone: selectedZone).future);
+        await ref.watch(zoneStreetLampsProvider(zone: selectedZone!).future);
 
     _log.listCount(list);
     return list;
@@ -67,14 +70,14 @@ class LampList extends _$LampList {
   Future addOrUpdate(StreetLamp streetLamp) async {
     _log.i('addOrUpdate( $streetLamp )');
     return ref
-        .read(zoneStreetLampsProvider(zone: selectedZone).notifier)
+        .read(zoneStreetLampsProvider(zone: selectedZone!).notifier)
         .addOrUpdate(streetLamp);
   }
 
   Future remove(StreetLamp streetLamp) async {
     _log.i('remove( $streetLamp )');
     return ref
-        .read(zoneStreetLampsProvider(zone: selectedZone).notifier)
+        .read(zoneStreetLampsProvider(zone: selectedZone!).notifier)
         .remove(streetLamp);
   }
 }

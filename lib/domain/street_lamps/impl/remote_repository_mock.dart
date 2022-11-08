@@ -17,7 +17,7 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
   static int _nextId = 2001;
 
   final CityZoneRemoteRepositoryMock _cityZoneRemoteRepositoryMock;
-  final RemoteCallEmulator _emulator = RemoteCallEmulator();
+  final _emulator = RemoteCallEmulator(exceptionProbability: 0.5);
 
   Map<CityZone, Map<String, StreetLamp>>? _zoneLamps;
 

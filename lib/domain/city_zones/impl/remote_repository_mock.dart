@@ -16,7 +16,7 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
 
   static int _nextId = 1001;
 
-  final _emulator = RemoteCallEmulator();
+  final _emulator = RemoteCallEmulator(exceptionProbability: 0.5);
 
   final IList<CityZone> _zones = IList<CityZone>(const [defaultZone]);
 

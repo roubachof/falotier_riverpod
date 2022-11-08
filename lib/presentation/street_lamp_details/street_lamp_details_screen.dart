@@ -96,7 +96,7 @@ class _DetailsBodyState extends ConsumerState<DetailsBody> {
 
     final lampAsyncValue = ref.watch(streetLampStateProvider(id: widget.id));
 
-    return AsyncValueConverter<StreetLamp>(
+    return AsyncValueWidget<StreetLamp>(
       lampAsyncValue,
       onErrorButtonTap: () =>
           ref.refresh(streetLampStateProvider(id: widget.id)),

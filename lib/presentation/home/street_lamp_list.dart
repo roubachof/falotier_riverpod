@@ -18,7 +18,7 @@ class StreetLampList extends ConsumerWidget {
     final lampListAsyncValue = ref.watch(lampListProvider);
     final lampListNotifier = ref.watch(lampListProvider.notifier);
 
-    return AsyncValueConverter<IList<StreetLamp>>(
+    return AsyncValueWidget<IList<StreetLamp>>(
       lampListAsyncValue,
       asSlivers: true,
       onErrorButtonTap: () => ref.refresh(lampListProvider),

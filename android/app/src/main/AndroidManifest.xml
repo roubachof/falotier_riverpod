@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="care.otio.otiocare">
+    package="com.sharpnado.falotier">
    <application
-        android:label="falotier"
+        android:label="Falotier"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

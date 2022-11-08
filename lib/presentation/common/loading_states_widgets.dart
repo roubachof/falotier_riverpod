@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:falotier/infrastructure/logger_factory.dart';
 import 'package:falotier_design/falotier_design.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -62,25 +63,29 @@ String _errorToString(Object error) {
   return errorMessage;
 }
 
-class AsyncValueConverter<T> extends StatefulWidget {
+class AsyncValueWidget<T> extends StatefulWidget {
   final AsyncValue<T> asyncValue;
   final VoidCallback onErrorButtonTap;
   final Widget Function(T data) childBuilder;
   final bool asSlivers;
+  final double containerHeight;
 
-  const AsyncValueConverter(
+  const AsyncValueWidget(
     this.asyncValue, {
     required this.onErrorButtonTap,
     required this.childBuilder,
     this.asSlivers = false,
+    this.containerHeight = 400,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<AsyncValueConverter<T>> createState() => _AsyncValueConverterState<T>();
+  State<AsyncValueWidget<T>> createState() => _AsyncValueWidgetState<T>();
 }
 
-class _AsyncValueConverterState<T> extends State<AsyncValueConverter<T>> {
+class _AsyncValueWidgetState<T> extends State<AsyncValueWidget<T>> {
+  static final _log = LoggerFactory.logger('AsyncValueWidget');
+
   Widget? _previousWidget;
 
   AsyncValue<T> get asyncValue => widget.asyncValue;
@@ -95,21 +100,23 @@ class _AsyncValueConverterState<T> extends State<AsyncValueConverter<T>> {
   }
 
   Widget _handleSuccess(T data) {
+    _log.i('_handleSuccess()');
     final result = widget.childBuilder(data);
     _previousWidget = result;
     return result;
   }
 
   Widget _handleLoading() {
-    const loadingWidget = SizedBox(
-      height: 500,
-      child: Center(
+    _log.i('_handleLoading()');
+    final loadingWidget = SizedBox(
+      height: widget.containerHeight,
+      child: const Center(
         child: AppLoadingWidget(),
       ),
     );
 
     final result = widget.asSlivers
-        ? const SliverToBoxAdapter(
+        ? SliverToBoxAdapter(
             child: loadingWidget,
           )
         : loadingWidget;
@@ -119,6 +126,7 @@ class _AsyncValueConverterState<T> extends State<AsyncValueConverter<T>> {
   }
 
   Widget _handleError(Object error, StackTrace trace) {
+    _log.e('Error in async loading', error, trace);
     if (asyncValue.isRefreshing) {
       // Display SnackBar instead of a full loading indicator
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -129,7 +137,7 @@ class _AsyncValueConverterState<T> extends State<AsyncValueConverter<T>> {
 
     final errorWidget = Center(
       child: SizedBox(
-        height: 500,
+        height: widget.containerHeight,
         child: Center(
           child: AppErrorWidget(_errorToString(error), widget.onErrorButtonTap),
         ),

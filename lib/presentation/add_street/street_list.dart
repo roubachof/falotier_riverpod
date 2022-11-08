@@ -35,7 +35,7 @@ class StreetList extends ConsumerWidget {
           ],
         ),
       ),
-      child: AsyncValueConverter<IList<Street>>(
+      child: AsyncValueWidget<IList<Street>>(
         streetListAsyncValue,
         onErrorButtonTap: () => ref.refresh(lampListProvider),
         childBuilder: (data) => ListView.separated(
