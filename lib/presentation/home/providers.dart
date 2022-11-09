@@ -64,17 +64,17 @@ class LampList extends _$LampList {
   Future refresh() {
     _log.i('refresh()');
 
-    ref.invalidate(zoneStreetLampsProvider(zone: selectedZone!));
-    return ref.refresh(lampListProvider.future);
+    return ref.refresh(zoneStreetLampsProvider(zone: selectedZone!).future);
   }
 
   void reload() {
     _log.i('reload()');
 
-    ref.refresh(availableZonesProvider);
     if (selectedZone != null) {
-      ref.refresh(zoneStreetLampsProvider(zone: selectedZone!));
+      ref.invalidate(zoneStreetLampsProvider(zone: selectedZone!));
     }
+
+    ref.invalidateSelf();
   }
 
   Future addOrUpdate(StreetLamp streetLamp) async {

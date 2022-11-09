@@ -20,7 +20,8 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
 
   final IList<CityZone> _zones = IList<CityZone>(const [defaultZone]);
 
-  late final Map<CityZone, IList<Street>> _streetByZone = _createStreets();
+  Map<CityZone, IList<Street>> _streetByZone =
+      Map<CityZone, IList<Street>>.identity();
 
   @override
   Future<IList<CityZone>> getAvailableZones() async {
@@ -37,6 +38,11 @@ class CityZoneRemoteRepositoryMock implements CityZoneRemoteRepository {
     final streets = _streetByZone[zone]!;
     _log.listCount(streets);
     return streets;
+  }
+
+  initializeMock() {
+    _log.i('initializeMock()');
+    _streetByZone = _createStreets();
   }
 
   Map<CityZone, IList<Street>> _createStreets() {

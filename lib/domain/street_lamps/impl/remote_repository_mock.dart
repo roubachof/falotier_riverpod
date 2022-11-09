@@ -7,9 +7,15 @@ import 'package:falotier/infrastructure/exceptions.dart';
 import 'package:falotier/infrastructure/logger_factory.dart';
 import 'package:falotier/infrastructure/remote_call_emulator.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../interfaces.dart';
 import '../street_lamp.dart';
+
+final streetLampRemoteRepositoryMockProvider =
+    Provider<StreetLampRemoteRepositoryMock>((ref) =>
+        StreetLampRemoteRepositoryMock(
+            ref.read(cityZoneRemoteRepositoryMockProvider)));
 
 class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
   static final _log = LoggerFactory.logger('StreetLampRemoteRepositoryMock');
@@ -28,7 +34,6 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
     _log.i('addOrUpdate( $streetLamp )');
 
     await _emulator.makeRemoteCall();
-    await _createLampsIfNeeded();
 
     if (streetLamp.id == 'new') {
       streetLamp = streetLamp.copyWith(id: (_nextId++).toString());
@@ -44,7 +49,6 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
     _log.i('get( $id )');
 
     await _emulator.makeRemoteCall();
-    await _createLampsIfNeeded();
 
     for (var streets in _zoneLamps!.values) {
       if (streets.containsKey(id)) {
@@ -60,7 +64,6 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
     _log.i('getList( $zone )');
 
     await _emulator.makeRemoteCall();
-    await _createLampsIfNeeded();
 
     return _zoneLamps![zone]!.values.toIList();
   }
@@ -70,16 +73,16 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
     _log.i('remove( $streetLamp )');
 
     await _emulator.makeRemoteCall();
-    await _createLampsIfNeeded();
 
     _zoneLamps![streetLamp.street.zone]!.remove(streetLamp.id);
   }
 
-  Future _createLampsIfNeeded() async {
-    if (_zoneLamps != null) {
-      return;
-    }
+  Future initializeMock() {
+    _log.i('initializeMock()');
+    return _createLamps();
+  }
 
+  Future _createLamps() async {
     final random = Random();
     final zoneLamps = Map<CityZone, Map<String, StreetLamp>>.identity();
     for (final zone

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'providers.dart';
+part of 'domain_initializer.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,34 +29,14 @@ class _SystemHash {
   }
 }
 
-String $SelectedZoneHash() => r'2cc005b4daa2333a7ee89338e53a037bf8a72dd5';
+String $domainInitializerHash() => r'b433dab5550feccfa099c8b5b1ed365ec159447c';
 
-/// See also [SelectedZone].
-final selectedZoneProvider = AsyncNotifierProvider<SelectedZone, CityZone>(
-  SelectedZone.new,
-  name: r'selectedZoneProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $SelectedZoneHash,
+/// See also [domainInitializer].
+final domainInitializerProvider = FutureProvider<bool>(
+  domainInitializer,
+  name: r'domainInitializerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : $domainInitializerHash,
 );
-typedef SelectedZoneRef = AsyncNotifierProviderRef<CityZone>;
-
-abstract class _$SelectedZone extends AsyncNotifier<CityZone> {
-  @override
-  FutureOr<CityZone> build();
-}
-
-String $LampListHash() => r'5098b7f26fb5d01f3ca4a82e2a339521704cc64c';
-
-/// See also [LampList].
-final lampListProvider = AsyncNotifierProvider<LampList, IList<StreetLamp>>(
-  LampList.new,
-  name: r'lampListProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $LampListHash,
-);
-typedef LampListRef = AsyncNotifierProviderRef<IList<StreetLamp>>;
-
-abstract class _$LampList extends AsyncNotifier<IList<StreetLamp>> {
-  @override
-  FutureOr<IList<StreetLamp>> build();
-}
+typedef DomainInitializerRef = FutureProviderRef<bool>;
