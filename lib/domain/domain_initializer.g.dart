@@ -29,14 +29,20 @@ class _SystemHash {
   }
 }
 
-String $domainInitializerHash() => r'b433dab5550feccfa099c8b5b1ed365ec159447c';
+String $DomainInitializerHash() => r'88ad27f866d564344bb71cabfc44f9fe6a4f8bfe';
 
-/// See also [domainInitializer].
-final domainInitializerProvider = FutureProvider<bool>(
-  domainInitializer,
+/// See also [DomainInitializer].
+final domainInitializerProvider =
+    AsyncNotifierProvider<DomainInitializer, bool>(
+  DomainInitializer.new,
   name: r'domainInitializerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $domainInitializerHash,
+      : $DomainInitializerHash,
 );
-typedef DomainInitializerRef = FutureProviderRef<bool>;
+typedef DomainInitializerRef = AsyncNotifierProviderRef<bool>;
+
+abstract class _$DomainInitializer extends AsyncNotifier<bool> {
+  @override
+  FutureOr<bool> build();
+}

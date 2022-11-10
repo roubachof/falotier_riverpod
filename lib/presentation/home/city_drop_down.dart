@@ -1,5 +1,6 @@
 import 'package:falotier/domain/city_zones/city_zone.dart';
 import 'package:falotier/domain/city_zones/providers.dart';
+import 'package:falotier/domain/domain_initializer.dart';
 import 'package:falotier_design/falotier_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,47 +12,30 @@ class CityDropDown extends ConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final theme = AppTheme.of(context);
+    final domainInitializerAsyncValue = ref.watch(domainInitializerProvider);
+    return domainInitializerAsyncValue.when(
+      error: (_, __) => const AppText.subtitleMedium('INIT ERROR'),
+      loading: () => const AppLoadingText(),
+      data: (_) {
+        final zonesAsyncValue = ref.watch(availableZonesProvider);
+        final selectedZone = ref.watch(selectedZoneProvider);
+        final selectedZoneNotifier = ref.watch(selectedZoneProvider.notifier);
 
-    final zonesAsyncValue = ref.watch(availableZonesProvider);
-    final selectedZone = ref.read(selectedZoneProvider);
-    final selectedZoneNotifier = ref.read(selectedZoneProvider.notifier);
-
-    return selectedZone.when(
-      data: (data) {
-        final zones = zonesAsyncValue.value!;
-        return DropdownButton<CityZone>(
-          value: data,
-          items: zones.map<DropdownMenuItem<CityZone>>((zone) {
-            return DropdownMenuItem<CityZone>(
-              value: zone,
-              child: AppText.subtitleMedium(zone.name),
+        return selectedZone.when(
+          error: (_, __) => const AppText.subtitleMedium('ERROR'),
+          loading: () => const AppLoadingText(),
+          data: (data) {
+            final zones = zonesAsyncValue.value!;
+            return DropdownButton<CityZone>(
+              value: data,
+              items: zones.map<DropdownMenuItem<CityZone>>((zone) {
+                return DropdownMenuItem<CityZone>(
+                  value: zone,
+                  child: AppText.subtitleMedium(zone.name),
+                );
+              }).toList(),
+              onChanged: (zone) => selectedZoneNotifier.select(zone!),
             );
-          }).toList(),
-          onChanged: (zone) => selectedZoneNotifier.select(zone!),
-        );
-      },
-      error: (_, __) {
-        return const AppText.subtitleMedium('ERROR');
-      },
-      loading: () {
-        return TweenAnimationBuilder<int>(
-          duration: const Duration(seconds: 200),
-          tween: IntTween(begin: 0, end: 200 * 1000),
-          builder: (BuildContext context, value, Widget? child) {
-            // Funny little easy animation
-            String dots = '';
-
-            final loadingDurationMilliseconds = value % 1000;
-            if (loadingDurationMilliseconds > 750) {
-              dots = '...';
-            } else if (loadingDurationMilliseconds > 500) {
-              dots = '..';
-            } else if (loadingDurationMilliseconds > 250) {
-              dots = '.';
-            }
-
-            return AppText.subtitleMedium('Loading$dots');
           },
         );
       },

@@ -98,6 +98,7 @@ class _DetailsBodyState extends ConsumerState<DetailsBody> {
 
     return AsyncValueWidget<StreetLamp>(
       lampAsyncValue,
+      containerHeight: 500,
       onErrorButtonTap: () =>
           ref.refresh(streetLampStateProvider(id: widget.id)),
       childBuilder: (lamp) {

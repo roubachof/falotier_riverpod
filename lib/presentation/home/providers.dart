@@ -1,5 +1,6 @@
 import 'package:falotier/domain/city_zones/city_zone.dart';
 import 'package:falotier/domain/city_zones/providers.dart';
+import 'package:falotier/domain/domain_initializer.dart';
 import 'package:falotier/domain/street_lamps/providers.dart';
 import 'package:falotier/domain/street_lamps/street_lamp.dart';
 import 'package:falotier/infrastructure/logger_factory.dart';
@@ -16,6 +17,9 @@ class SelectedZone extends _$SelectedZone {
   Future<CityZone> build() async {
     _log.i(
         'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
+
+    // Domain need to be initialized
+    await ref.watch(domainInitializerProvider.future);
 
     final zones = await ref.watch(availableZonesProvider.future);
     _log.listCount(zones);
@@ -34,6 +38,12 @@ class SelectedZone extends _$SelectedZone {
     }
 
     return super.updateShouldNotify(previous, next);
+  }
+
+  void reload() {
+    _log.i('reload()');
+
+    ref.invalidate(availableZonesProvider);
   }
 
   select(CityZone zone) {
@@ -61,15 +71,13 @@ class LampList extends _$LampList {
     return list;
   }
 
-  Future refresh() {
+  Future<void> refresh() {
     _log.i('refresh()');
-
     return ref.refresh(zoneStreetLampsProvider(zone: selectedZone!).future);
   }
 
   void reload() {
     _log.i('reload()');
-
     if (selectedZone != null) {
       ref.invalidate(zoneStreetLampsProvider(zone: selectedZone!));
     }

@@ -17,7 +17,7 @@ class StreetList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = AppTheme.of(context);
-    final selectedZone = ref.read(selectedZoneProvider);
+    final selectedZone = ref.watch(selectedZoneProvider);
     final streetListAsyncValue =
         ref.watch(availableStreetsProvider(zone: selectedZone.value!));
 
@@ -37,7 +37,9 @@ class StreetList extends ConsumerWidget {
       ),
       child: AsyncValueWidget<IList<Street>>(
         streetListAsyncValue,
-        onErrorButtonTap: () => ref.refresh(lampListProvider),
+        onErrorButtonTap: () => ref
+            .read(availableStreetsProvider(zone: selectedZone.value!).notifier)
+            .reload(),
         childBuilder: (data) => ListView.separated(
           separatorBuilder: (_, __) => Divider(
             color: theme.colors.foregroundAtNight,
@@ -77,6 +79,7 @@ class StreetList extends ConsumerWidget {
       context: context,
       future: () => streetLampNotifier.addOrUpdate(streetLamp),
       onSuccess: () => Navigator.pop(context),
+      showOverlay: true,
     );
   }
 }

@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $SelectedZoneHash() => r'2cc005b4daa2333a7ee89338e53a037bf8a72dd5';
+String $SelectedZoneHash() => r'80fc7edfd163522528aa0da831ac4fbff13f3fac';
 
 /// See also [SelectedZone].
 final selectedZoneProvider = AsyncNotifierProvider<SelectedZone, CityZone>(
@@ -45,7 +45,7 @@ abstract class _$SelectedZone extends AsyncNotifier<CityZone> {
   FutureOr<CityZone> build();
 }
 
-String $LampListHash() => r'5098b7f26fb5d01f3ca4a82e2a339521704cc64c';
+String $LampListHash() => r'a6b3e57d211cf3b67906f6157cc2ad6a1813e888';
 
 /// See also [LampList].
 final lampListProvider = AsyncNotifierProvider<LampList, IList<StreetLamp>>(

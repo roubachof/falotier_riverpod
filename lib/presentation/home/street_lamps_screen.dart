@@ -1,4 +1,5 @@
 import 'package:falotier/presentation/add_street/add_street_screen.dart';
+import 'package:falotier/presentation/common/loading_states_widgets.dart';
 import 'package:falotier/presentation/home/providers.dart';
 import 'package:falotier_design/falotier_design.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +23,11 @@ class StreetLampsScreen extends ConsumerWidget {
       body: AppContainer(
         child: RefreshIndicator(
           color: theme.colors.accent,
-          notificationPredicate: (_) => ref.read(lampListProvider).hasValue,
-          onRefresh: () => ref.read(lampListProvider.notifier).refresh(),
+          notificationPredicate: (_) => !ref.watch(lampListProvider).isLoading,
+          onRefresh: () => handleCommandFuture(
+            context: context,
+            future: () => ref.read(lampListProvider.notifier).refresh(),
+          ),
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(

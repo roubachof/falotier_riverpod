@@ -1,4 +1,5 @@
 import 'package:diffutil_sliverlist/diffutil_sliverlist.dart';
+import 'package:falotier/domain/domain_initializer.dart';
 import 'package:falotier/domain/street_lamps/street_lamp.dart';
 import 'package:falotier/presentation/common/loading_states_widgets.dart';
 import 'package:falotier/routes.dart';
@@ -15,52 +16,72 @@ class StreetLampList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lampListAsyncValue = ref.watch(lampListProvider);
-    final lampListNotifier = ref.watch(lampListProvider.notifier);
-
-    return AsyncValueWidget<IList<StreetLamp>>(
-      lampListAsyncValue,
+    return AsyncValueSequenceWidget<IList<StreetLamp>>(
       asSlivers: true,
-      onErrorButtonTap: () => ref.read(lampListProvider.notifier).reload(),
-      childBuilder: (data) {
-        return DiffUtilSliverList.fromKeyedWidgetList(
-          children: data.map((lamp) {
-            return AppPadding(
-              key: Key(lamp.id),
-              padding: const AppEdgeInsets.only(
-                top: AppGapSize.small,
-                bottom: AppGapSize.regular,
-                left: AppGapSize.regular,
-                right: AppGapSize.regular,
-              ),
-              child: StreetLampTile(
-                name: lamp.street.name,
-                districtName: lamp.street.districtDisplay,
-                description: lamp.street.description,
-                streetImageName: lamp.street.imageAsset,
-                onTap: () => StreetLampDetailsRoute(
-                  lamp.id,
-                  $extra: lamp.street.name,
-                ).push(context),
-                onRemove: () => lampListNotifier.remove(lamp),
-                isLampLit: lamp.isLit,
-              ),
-            );
-          }).toList(),
-          insertAnimationBuilder: (context, animation, child) => FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
-          removeAnimationBuilder: (context, animation, child) => FadeTransition(
-            opacity: animation,
-            child: SizeTransition(
-              sizeFactor: animation,
-              axisAlignment: 0,
+      nodes: [
+        AsyncValueSequenceNode(
+          ref.watch(domainInitializerProvider),
+          onErrorButtonTap: () =>
+              ref.read(domainInitializerProvider.notifier).reload(),
+          loadingMessage: 'Initializing the app',
+          nodeName: 'domainInitializerNode',
+        ),
+        AsyncValueSequenceNode(
+          ref.watch(selectedZoneProvider),
+          onErrorButtonTap: () =>
+              ref.read(selectedZoneProvider.notifier).reload(),
+          loadingMessage: 'Loading the available zones',
+          nodeName: 'selectedZoneNode',
+        ),
+      ],
+      leaf: AsyncValueSequenceLeaf<IList<StreetLamp>>(
+        ref.watch(lampListProvider),
+        onErrorButtonTap: () => ref.read(lampListProvider.notifier).reload(),
+        loadingMessage: 'loading street lamps',
+        leafName: 'lampListLeaf',
+        childBuilder: (data) {
+          return DiffUtilSliverList.fromKeyedWidgetList(
+            children: data.map((lamp) {
+              return AppPadding(
+                key: Key(lamp.id),
+                padding: const AppEdgeInsets.only(
+                  top: AppGapSize.small,
+                  bottom: AppGapSize.regular,
+                  left: AppGapSize.regular,
+                  right: AppGapSize.regular,
+                ),
+                child: StreetLampTile(
+                  name: lamp.street.name,
+                  districtName: lamp.street.districtDisplay,
+                  description: lamp.street.description,
+                  streetImageName: lamp.street.imageAsset,
+                  onTap: () => StreetLampDetailsRoute(
+                    lamp.id,
+                    $extra: lamp.street.name,
+                  ).push(context),
+                  onRemove: () =>
+                      ref.read(lampListProvider.notifier).remove(lamp),
+                  isLampLit: lamp.isLit,
+                ),
+              );
+            }).toList(),
+            insertAnimationBuilder: (context, animation, child) =>
+                FadeTransition(
+              opacity: animation,
               child: child,
             ),
-          ),
-        );
-      },
+            removeAnimationBuilder: (context, animation, child) =>
+                FadeTransition(
+              opacity: animation,
+              child: SizeTransition(
+                sizeFactor: animation,
+                axisAlignment: 0,
+                child: child,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
