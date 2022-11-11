@@ -119,9 +119,11 @@ class _LitLampWidgetState extends ConsumerState<LitLampWidget> {
       handleCommandError(context, e, t);
     } finally {
       _isTurningOff = _isTurningOn = false;
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

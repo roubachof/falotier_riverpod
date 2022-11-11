@@ -18,8 +18,9 @@ class ZoneStreetLamps extends _$ZoneStreetLamps {
 
   @override
   Future<IList<StreetLamp>> build({required CityZone zone}) async {
-    _log.i(
-        'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
+    _log.i('build( isRefreshing: ${state.isRefreshing}, '
+        'isReloading: ${state.isReloading}, '
+        'hasValue: ${state.hasValue} )');
 
     _repository = ref.read(streetLampRemoteRepositoryProvider);
     final lamps = await _repository.getList(zone);
@@ -45,7 +46,9 @@ class ZoneStreetLamps extends _$ZoneStreetLamps {
     await _repository.remove(streetLamp);
 
     await update((currentList) {
-      return currentList.removeWhere((element) => element.id == streetLamp.id);
+      return currentList.removeWhere(
+        (element) => element.id == streetLamp.id,
+      );
     });
   }
 }

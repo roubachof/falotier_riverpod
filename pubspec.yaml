@@ -54,6 +54,7 @@ dev_dependencies:
   riverpod_generator: ^1.0.6
   freezed: ^2.2.1
   go_router_builder: ^1.0.15
+  flutter_launcher_icons: ^0.10.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -62,8 +63,12 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.1
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+flutter_icons:
+  image_path: "assets/app_icon.png"
+  ios: true
+  android: true
+  remove_alpha_ios: true
+
 
 # The following section is specific to Flutter packages.
 flutter:
