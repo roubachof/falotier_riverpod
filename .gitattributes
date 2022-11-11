@@ -1,0 +1,6 @@
+docs/refresh_home.jpg filter=lfs diff=lfs merge=lfs -text
+docs/add_item.jpg filter=lfs diff=lfs merge=lfs -text
+docs/device_add_remove.mp4 filter=lfs diff=lfs merge=lfs -text
+docs/device_light_lamp.mp4 filter=lfs diff=lfs merge=lfs -text
+docs/lamp_details_update.jpg filter=lfs diff=lfs merge=lfs -text
+docs/loading_home.jpg filter=lfs diff=lfs merge=lfs -text
