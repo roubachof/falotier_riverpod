@@ -2,12 +2,15 @@
 
 The purpose of this PoC is to implement all real life app scenarios and see if the selected state management library elegantly supports all the needed mutations.
 
-The select state management library: [Riverpod](https://pub.dev/packages/riverpod).
+The select state management library: [Riverpod](https://riverpod.dev).
 
 <img width="1060" alt="Capture d’écran 2022-11-11 à 10 31 07" src="https://user-images.githubusercontent.com/596903/201427876-22358a54-bc4a-4c54-be08-466dda337d94.png">
 
 I am a `Riverpod` enthusiast, but coming from a MVVM oriented world, I had my share of doubts and interrogations.
 I read a lot of examples, but I couldn't find a sample app that covers the scenarios I always meet when I am building an app for a client.
+
+<img width="760" alt="Capture d’écran 2022-11-11 à 20 58 33" src="https://user-images.githubusercontent.com/596903/201429767-1493fbac-4791-45aa-806a-5afc06eeb2aa.png">
+
 
 So I decided to see if I could build an app that supports the most classic use-cases from real-life app with `Riverpod`.
 And here is the result.
