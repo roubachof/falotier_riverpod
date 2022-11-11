@@ -4,7 +4,8 @@ The purpose of this PoC is to implement all real life app scenarios and see if t
 
 The select state management library: [Riverpod](https://riverpod.dev).
 
-<img width="1060" alt="Capture d’écran 2022-11-11 à 10 31 07" src="https://user-images.githubusercontent.com/596903/201427876-22358a54-bc4a-4c54-be08-466dda337d94.png">
+<img width="1000" alt="providers_home_opt" src="https://user-images.githubusercontent.com/596903/201432842-4ff38892-d2d0-47ee-9920-29581a033b34.png">
+
 
 I am a `Riverpod` enthusiast, but coming from a MVVM oriented world, I had my share of doubts and interrogations.
 I read a lot of examples, but I couldn't find a sample app that covers the scenarios I always meet when I am building an app for a client.
