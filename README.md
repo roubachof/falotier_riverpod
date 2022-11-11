@@ -4,21 +4,27 @@ The purpose of this PoC is to implement all real life app scenarios and see if t
 
 The select state management library: [Riverpod](https://pub.dev/packages/riverpod).
 
-I am a `Riverpod` enthusiast, but coming from a MVVM oriented world, I had my share of doubts and interrogations.
-I read a lot of example, but I couldn't find a sample app that covers the scenarios I always meet when I am building an app for a client.
+<img width="1060" alt="Capture d’écran 2022-11-11 à 10 31 07" src="https://user-images.githubusercontent.com/596903/201427876-22358a54-bc4a-4c54-be08-466dda337d94.png">
 
-So I decided to see If I could build an app that supports the most classic use-cases from real-life app with `Riverpod`.
+I am a `Riverpod` enthusiast, but coming from a MVVM oriented world, I had my share of doubts and interrogations.
+I read a lot of examples, but I couldn't find a sample app that covers the scenarios I always meet when I am building an app for a client.
+
+So I decided to see if I could build an app that supports the most classic use-cases from real-life app with `Riverpod`.
 And here is the result.
 
 ## Supported use-cases
 
 In Falotier, I try to support as much real-life use cases.\
-You have a list of streets with a street lamp which is lit or not.\
+You have a list of streets with a street lamp which is lit or not.
+
 As a Falotier:
 * You can assign new streets to you by taping to the `Add Street` button,
 * You can lighten your burden by taping on the cross of an item,
 * You must lit the street lamp when the night is coming by taping on the street lamp bulb,
 * You must turn off the street lamp when the night is over with the same gesture.
+
+
+https://user-images.githubusercontent.com/596903/201428372-e9c6a5ba-74af-433d-809f-a1972ad3724d.mp4
 
 
 ### Loading from scratch
@@ -69,7 +75,7 @@ During the call, we transform our cross icon to a loading widget.\
 If the remote call is successful we update our list state and the item is removed.\
 If there was a error during the call, we display a `SnackBar` to our user.
 
-![video]()
+https://user-images.githubusercontent.com/596903/201427126-e86240b6-d567-4178-9adf-d65b2f532ba0.mp4
 
 #### Riverpod implementation
 
@@ -87,7 +93,7 @@ If it fails, the previous state is restored and we display a `SnackBar`.
 
 Our architecture must of course propagate the new immutable item to the item list.
 
-![video]()
+https://user-images.githubusercontent.com/596903/201427337-d67bbf4a-46ae-41df-b2ce-80f3d0b9cc94.mp4
 
 ## The application architecture
 
