@@ -1,4 +1,4 @@
-# Falotier: a 'real-life' state management PoC
+# <img src='assets/app_icon.png' width='50'> Falotier: a 'real-life' state management PoC
 
 The purpose of this PoC is to implement all real life app scenarios and see if the selected state management library elegantly supports all the needed mutations.
 
@@ -15,6 +15,18 @@ I read a lot of examples, but I couldn't find a sample app that covers the scena
 
 So I decided to see if I could build an app that supports the most classic use-cases from real-life app with `Riverpod`.
 And here is the result.
+
+## Docs future
+
+Follow me on twitter @Piskariov, or subscribe to the news feed of my website to receive all future explanations of falotier's implementation!
+
+- [x] Showcase `falotier_riverpod`
+- [x] Enumerate all the app loading states
+- [ ] General architecture
+- [ ] Implementation details of `loading from scratch`
+- [ ] Implementation details of `refreshing`
+- [ ] Implementation details of `list update`
+- [ ] Implementation details of `item details update`
 
 ## Supported use-cases
 
