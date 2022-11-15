@@ -4,7 +4,7 @@ The purpose of this PoC is to implement all real life app scenarios and see if t
 
 The select state management library: [Riverpod](https://riverpod.dev).
 
-<img width="1000" alt="providers_home_opt" src="https://user-images.githubusercontent.com/596903/201432842-4ff38892-d2d0-47ee-9920-29581a033b34.png">
+<img width="860" alt="providers_home" src="docs/list_and_providers.png">
 
 
 I am a `Riverpod` enthusiast, but coming from a MVVM oriented world, I had my share of doubts and interrogations.
@@ -39,8 +39,7 @@ As a Falotier:
 * You must lit the street lamp when the night is coming by taping on the street lamp bulb,
 * You must turn off the street lamp when the night is over with the same gesture.
 
-
-https://user-images.githubusercontent.com/596903/201428372-e9c6a5ba-74af-433d-809f-a1972ad3724d.mp4
+https://user-images.githubusercontent.com/596903/202012055-60936a90-c675-4506-86a9-18c7fcb08900.mp4
 
 
 ### Loading from scratch
