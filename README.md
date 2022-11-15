@@ -1,4 +1,4 @@
-![long_logo_opt](https://user-images.githubusercontent.com/596903/201747914-2f0c5052-ca0c-4896-86e9-15e1abd44f42.png)
+<img width="500" alt="falotier long logo" src="https://user-images.githubusercontent.com/596903/201747914-2f0c5052-ca0c-4896-86e9-15e1abd44f42.png">
 
 The purpose of this PoC is to implement all real life app scenarios and see if the selected state management library elegantly supports all the needed mutations.
 
