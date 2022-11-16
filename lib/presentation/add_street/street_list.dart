@@ -75,7 +75,7 @@ class StreetList extends ConsumerWidget {
   ) {
     final streetLampNotifier = ref.watch(lampListProvider.notifier);
     final streetLamp = StreetLamp.fromStreet(data);
-    handleCommandFuture(
+    handleAsyncCommand(
       context: context,
       future: () => streetLampNotifier.addOrUpdate(streetLamp),
       onSuccess: () => Navigator.pop(context),

@@ -14,23 +14,22 @@ part 'providers.g.dart';
 class ZoneStreetLamps extends _$ZoneStreetLamps {
   static final _log = LoggerFactory.logger('ZoneStreetLampsProvider');
 
-  late StreetLampRemoteRepository _repository;
-
   @override
   Future<IList<StreetLamp>> build({required CityZone zone}) async {
     _log.i('build( isRefreshing: ${state.isRefreshing}, '
         'isReloading: ${state.isReloading}, '
         'hasValue: ${state.hasValue} )');
 
-    _repository = ref.read(streetLampRemoteRepositoryProvider);
-    final lamps = await _repository.getList(zone);
+    final repository = ref.watch(streetLampRemoteRepositoryProvider);
+    final lamps = await repository.getList(zone);
     return lamps.sort(streetLampComparator);
   }
 
   Future addOrUpdate(StreetLamp streetLamp) async {
     _log.i('addOrUpdate( $streetLamp )');
 
-    final updatedLamp = await _repository.addOrUpdate(streetLamp);
+    final repository = ref.read(streetLampRemoteRepositoryProvider);
+    final updatedLamp = await repository.addOrUpdate(streetLamp);
 
     await update((currentList) {
       final updatedList =
@@ -43,7 +42,9 @@ class ZoneStreetLamps extends _$ZoneStreetLamps {
 
   Future remove(StreetLamp streetLamp) async {
     _log.i('remove( $streetLamp )');
-    await _repository.remove(streetLamp);
+
+    final repository = ref.read(streetLampRemoteRepositoryProvider);
+    await repository.remove(streetLamp);
 
     await update((currentList) {
       return currentList.removeWhere(
@@ -60,7 +61,7 @@ class StreetLampState extends _$StreetLampState {
   @override
   Future<StreetLamp> build({required String id}) {
     _log.i('build( $id )');
-    return ref.read(streetLampRemoteRepositoryProvider).get(id);
+    return ref.watch(streetLampRemoteRepositoryProvider).get(id);
   }
 
   Future updateLight(bool isLit) async {
@@ -73,7 +74,7 @@ class StreetLampState extends _$StreetLampState {
     final streetLamp = state.value!;
     final updatedStreetLamp = streetLamp.copyWith(isLit: isLit);
     final zoneStreetLamps = ref
-        .watch(zoneStreetLampsProvider(zone: streetLamp.street.zone).notifier);
+        .read(zoneStreetLampsProvider(zone: streetLamp.street.zone).notifier);
 
     await zoneStreetLamps.addOrUpdate(updatedStreetLamp);
     state = AsyncData(updatedStreetLamp);

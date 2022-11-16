@@ -24,7 +24,7 @@ class StreetLampsScreen extends ConsumerWidget {
         child: RefreshIndicator(
           color: theme.colors.accent,
           notificationPredicate: (_) => !ref.watch(lampListProvider).isLoading,
-          onRefresh: () => handleCommandFuture(
+          onRefresh: () => handleAsyncCommand(
             context: context,
             future: () => ref.read(lampListProvider.notifier).refresh(),
           ),

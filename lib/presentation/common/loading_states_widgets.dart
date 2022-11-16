@@ -20,7 +20,7 @@ handleCommandError(
   );
 }
 
-handleCommandFuture({
+handleAsyncCommand({
   required BuildContext context,
   required Future Function() future,
   FutureOr Function()? onSuccess,
