@@ -16,11 +16,11 @@ I read a lot of examples, but I couldn't find a sample app that covers the scena
 So I decided to see if I could build an app that supports the most classic use-cases from real-life app with `Riverpod`.
 And here is the result.
 
-## Docs future
+## Document in progress
 
-Follow me on twitter @Piskariov, or subscribe to the news feed of my website to receive all future explanations of falotier's implementation!
+Follow me on twitter @Piskariov, [linkedin](https://www.linkedin.com/in/alfonsi/) or subscribe to my blog [sharpnado](https://www.sharpnado.com/#/portal/signup) to receive all future explanations of falotier's implementation!
 
-- [x] Showcase `falotier_riverpod`
+- [x] Showcase `falotier_riverpod` ([blog post](https://www.sharpnado.com/falotier-riverpod))
 - [x] Enumerate all the app loading states
 - [ ] General architecture
 - [ ] Implementation details of `loading from scratch`
