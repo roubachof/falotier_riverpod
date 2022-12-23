@@ -1,3 +1,3 @@
 [submodule "packages/falotier_design"]
 	path = packages/falotier_design
-	url = git@github.com:roubachof/falotier_design.git
+	url = https://github.com/roubachof/falotier_design.git
