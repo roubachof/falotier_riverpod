@@ -22,7 +22,7 @@ Follow me on twitter @Piskariov, [linkedin](https://www.linkedin.com/in/alfonsi/
 
 - [x] Showcase `falotier_riverpod` ([blog post](https://www.sharpnado.com/falotier-riverpod))
 - [x] Enumerate all the app loading states
-- [ ] General architecture
+- [x] General architecture
 - [ ] Implementation details of `loading from scratch`
 - [ ] Implementation details of `refreshing`
 - [ ] Implementation details of `list update`
