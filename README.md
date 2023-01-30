@@ -2,7 +2,7 @@
 
 The purpose of this PoC is to implement all real life app scenarios and see if the selected state management library elegantly supports all the needed mutations.
 
-The select state management library: [Riverpod](https://riverpod.dev).
+The selected state management library: [Riverpod](https://riverpod.dev).
 
 <img width="860" alt="providers_home" src="docs/list_and_providers.png">
 
