@@ -17,7 +17,8 @@ class StreetLampsRoute extends GoRouteData {
   const StreetLampsRoute();
 
   @override
-  Widget build(BuildContext context) => const StreetLampsScreen();
+  Widget build(BuildContext context, GoRouterState state) =>
+      const StreetLampsScreen();
 }
 
 class StreetLampDetailsRoute extends GoRouteData {
@@ -27,7 +28,7 @@ class StreetLampDetailsRoute extends GoRouteData {
   final String? $extra;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, GoRouterState state) {
     assert($extra != null);
 
     return StreetLampDetailsScreen(

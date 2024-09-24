@@ -22,13 +22,11 @@ class StreetList extends ConsumerWidget {
         ref.watch(availableStreetsProvider(zone: selectedZone.value!));
 
     return LoaderOverlay(
-      overlayColor: Colors.black,
-      overlayOpacity: 0.8,
-      useDefaultLoading: false,
-      overlayWidget: Center(
+      overlayColor: Colors.black.withOpacity(0.8),
+      overlayWidgetBuilder: (_) => const Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             AppLoadingWidget(),
             AppGap.regular(),
             AppText.paragraphMedium('Street is being added'),

@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$lampDetailsHash() => r'31feb6cbd224ed60b88a5e1af1ae4ed77925c4fc';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,24 +29,119 @@ class _SystemHash {
   }
 }
 
-String $LampDetailsHash() => r'31feb6cbd224ed60b88a5e1af1ae4ed77925c4fc';
+abstract class _$LampDetails
+    extends BuildlessAutoDisposeAsyncNotifier<StreetLamp> {
+  late final String lampId;
+
+  FutureOr<StreetLamp> build({
+    required String lampId,
+  });
+}
+
+/// See also [LampDetails].
+@ProviderFor(LampDetails)
+const lampDetailsProvider = LampDetailsFamily();
+
+/// See also [LampDetails].
+class LampDetailsFamily extends Family<AsyncValue<StreetLamp>> {
+  /// See also [LampDetails].
+  const LampDetailsFamily();
+
+  /// See also [LampDetails].
+  LampDetailsProvider call({
+    required String lampId,
+  }) {
+    return LampDetailsProvider(
+      lampId: lampId,
+    );
+  }
+
+  @override
+  LampDetailsProvider getProviderOverride(
+    covariant LampDetailsProvider provider,
+  ) {
+    return call(
+      lampId: provider.lampId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'lampDetailsProvider';
+}
 
 /// See also [LampDetails].
 class LampDetailsProvider
     extends AutoDisposeAsyncNotifierProviderImpl<LampDetails, StreetLamp> {
+  /// See also [LampDetails].
   LampDetailsProvider({
-    required this.lampId,
-  }) : super(
+    required String lampId,
+  }) : this._internal(
           () => LampDetails()..lampId = lampId,
           from: lampDetailsProvider,
           name: r'lampDetailsProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $LampDetailsHash,
+                  : _$lampDetailsHash,
+          dependencies: LampDetailsFamily._dependencies,
+          allTransitiveDependencies:
+              LampDetailsFamily._allTransitiveDependencies,
+          lampId: lampId,
         );
 
+  LampDetailsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.lampId,
+  }) : super.internal();
+
   final String lampId;
+
+  @override
+  FutureOr<StreetLamp> runNotifierBuild(
+    covariant LampDetails notifier,
+  ) {
+    return notifier.build(
+      lampId: lampId,
+    );
+  }
+
+  @override
+  Override overrideWith(LampDetails Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: LampDetailsProvider._internal(
+        () => create()..lampId = lampId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        lampId: lampId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<LampDetails, StreetLamp>
+      createElement() {
+    return _LampDetailsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -60,58 +155,20 @@ class LampDetailsProvider
 
     return _SystemHash.finish(hash);
   }
-
-  @override
-  FutureOr<StreetLamp> runNotifierBuild(
-    covariant _$LampDetails notifier,
-  ) {
-    return notifier.build(
-      lampId: lampId,
-    );
-  }
 }
 
-typedef LampDetailsRef = AutoDisposeAsyncNotifierProviderRef<StreetLamp>;
-
-/// See also [LampDetails].
-final lampDetailsProvider = LampDetailsFamily();
-
-class LampDetailsFamily extends Family<AsyncValue<StreetLamp>> {
-  LampDetailsFamily();
-
-  LampDetailsProvider call({
-    required String lampId,
-  }) {
-    return LampDetailsProvider(
-      lampId: lampId,
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderImpl<LampDetails, StreetLamp>
-      getProviderOverride(
-    covariant LampDetailsProvider provider,
-  ) {
-    return call(
-      lampId: provider.lampId,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'lampDetailsProvider';
+mixin LampDetailsRef on AutoDisposeAsyncNotifierProviderRef<StreetLamp> {
+  /// The parameter `lampId` of this provider.
+  String get lampId;
 }
 
-abstract class _$LampDetails
-    extends BuildlessAutoDisposeAsyncNotifier<StreetLamp> {
-  late final String lampId;
+class _LampDetailsProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<LampDetails, StreetLamp>
+    with LampDetailsRef {
+  _LampDetailsProviderElement(super.provider);
 
-  FutureOr<StreetLamp> build({
-    required String lampId,
-  });
+  @override
+  String get lampId => (origin as LampDetailsProvider).lampId;
 }
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

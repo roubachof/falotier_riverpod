@@ -14,7 +14,7 @@ handleCommandError(
   Object error,
   StackTrace? stackTrace,
 ) {
-  _log.e('Error while executing command', error, stackTrace);
+  _log.e('Error while executing command', error: error, stackTrace: stackTrace);
   ScaffoldMessenger.of(context).showSnackBar(
     AppSnackBar.buildSnackBar(_errorToString(error), context),
   );
@@ -223,7 +223,7 @@ class _AsyncValueWidgetState<T> extends State<AsyncValueWidget<T>> {
   }
 
   Widget _handleError(Object error, StackTrace trace) {
-    _log.e('Error in async loading', error, trace);
+    _log.e('Error in async loading', error: error, stackTrace: trace);
 
     // if (asyncValue.isLoading) {
     //   return _handleLoading();

@@ -25,7 +25,11 @@ class SafeFuture<T> {
     try {
       await _future;
     } catch (e, stacktrace) {
-      _log.e('Exception while running Future<$T>: $e', e, stacktrace);
+      _log.e(
+        'Exception while running Future<$T>: $e',
+        error: e,
+        stackTrace: stacktrace,
+      );
     }
   }
 }

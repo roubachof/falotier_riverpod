@@ -6,11 +6,11 @@ part of 'routes.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<GoRoute> get $appRoutes => [
+List<RouteBase> get $appRoutes => [
       $streetLampsRoute,
     ];
 
-GoRoute get $streetLampsRoute => GoRouteData.$route(
+RouteBase get $streetLampsRoute => GoRouteData.$route(
       path: '/',
       factory: $StreetLampsRouteExtension._fromState,
       routes: [
@@ -29,15 +29,20 @@ extension $StreetLampsRouteExtension on StreetLampsRoute {
         '/',
       );
 
-  void go(BuildContext context) => context.go(location, extra: this);
+  void go(BuildContext context) => context.go(location);
 
-  void push(BuildContext context) => context.push(location, extra: this);
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
 
 extension $StreetLampDetailsRouteExtension on StreetLampDetailsRoute {
   static StreetLampDetailsRoute _fromState(GoRouterState state) =>
       StreetLampDetailsRoute(
-        state.params['id']!,
+        state.pathParameters['id']!,
         $extra: state.extra as String?,
       );
 
@@ -45,7 +50,14 @@ extension $StreetLampDetailsRouteExtension on StreetLampDetailsRoute {
         '/streetLampDetails/${Uri.encodeComponent(id)}',
       );
 
-  void go(BuildContext context) => context.go(location, extra: this);
+  void go(BuildContext context) => context.go(location, extra: $extra);
 
-  void push(BuildContext context) => context.push(location, extra: this);
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: $extra);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: $extra);
+
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }
