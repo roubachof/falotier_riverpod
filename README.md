@@ -52,7 +52,7 @@ Or we display an informative message to the user and we give him the possibility
 
 ### Riverpod implementation
 
-![1. Simple scenarion: only one dependency](load_from_scratch.md)
+[1. Simplest use case: only one dependency](load_from_scratch.md)
 
 ### Refreshing
 
