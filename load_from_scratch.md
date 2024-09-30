@@ -327,3 +327,7 @@ To sum-up:
 3. Reuse them througout your app by composing them with your `AsyncValueWidget`.
 
 Doing so you will achieve fail safe apps, and make your users happy.
+
+https://github.com/user-attachments/assets/4b83b7a2-1215-4f0a-909d-28d20be0b763
+
+
