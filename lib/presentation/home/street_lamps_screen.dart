@@ -10,12 +10,12 @@ import 'city_drop_down.dart';
 import 'street_lamp_list.dart';
 
 class StreetLampsScreen extends ConsumerWidget {
-  const StreetLampsScreen({Key? key}) : super(key: key);
+  const StreetLampsScreen({super.key});
 
   @override
   Widget build(context, ref) {
     final theme = AppTheme.of(context);
-    final safePaddingTop = MediaQuery.of(context).padding.top;
+    final safePaddingTop = MediaQuery.of(context).padding.top + 24;
 
     return Scaffold(
       backgroundColor: theme.colors.background,
@@ -122,9 +122,9 @@ class StreetLampsScreen extends ConsumerWidget {
 
 class AddStreetFloatingButton extends ConsumerWidget {
   const AddStreetFloatingButton({
-    Key? key,
+    super.key,
     required this.theme,
-  }) : super(key: key);
+  });
 
   final AppThemeData theme;
 

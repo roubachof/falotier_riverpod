@@ -7,10 +7,10 @@ import 'providers.dart';
 
 class LitLampWidget extends ConsumerStatefulWidget {
   const LitLampWidget({
-    Key? key,
+    super.key,
     required this.id,
     required this.isLit,
-  }) : super(key: key);
+  });
 
   final String id;
   final bool isLit;

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class IconButtonCommand extends StatefulWidget {
   const IconButtonCommand({
-    Key? key,
+    super.key,
     required this.iconData,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final IconData iconData;
   final Future Function() onPressed;

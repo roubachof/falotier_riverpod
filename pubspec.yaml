@@ -55,6 +55,7 @@ dev_dependencies:
   freezed: ^2.5.7
   go_router_builder: ^2.7.1
   flutter_launcher_icons: ^0.14.0
+  change_app_package_name: ^1.4.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

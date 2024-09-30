@@ -119,8 +119,8 @@ class AsyncValueSequenceWidget<T> extends StatelessWidget {
     this.containerHeight = 300,
     required this.nodes,
     required this.leaf,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<AsyncValueSequenceNode> nodes;
   final AsyncValueSequenceLeaf<T> leaf;
@@ -147,7 +147,7 @@ class AsyncValueSequenceWidget<T> extends StatelessWidget {
   }
 }
 
-class AsyncValueWidget<T> extends StatefulWidget {
+class AsyncValueWidget<T> extends StatelessWidget {
   final AsyncValue<T> asyncValue;
   final VoidCallback onErrorButtonTap;
   final String? loadingMessage;
@@ -156,7 +156,9 @@ class AsyncValueWidget<T> extends StatefulWidget {
   final double containerHeight;
   final String? loggerName;
 
-  const AsyncValueWidget(
+  late final Logger _log;
+
+  AsyncValueWidget(
     this.asyncValue, {
     required this.onErrorButtonTap,
     required this.childBuilder,
@@ -164,25 +166,10 @@ class AsyncValueWidget<T> extends StatefulWidget {
     this.containerHeight = 300,
     this.loadingMessage,
     this.loggerName,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<AsyncValueWidget<T>> createState() => _AsyncValueWidgetState<T>();
-}
-
-class _AsyncValueWidgetState<T> extends State<AsyncValueWidget<T>> {
-  late final Logger _log;
-
-  @override
-  void initState() {
-    _log = LoggerFactory.logger(widget.loggerName ?? 'AsyncValueWidget');
-    super.initState();
+    super.key,
+  }) {
+    _log = LoggerFactory.logger(loggerName ?? 'AsyncValueWidget');
   }
-
-  T? _currentData;
-
-  AsyncValue<T> get asyncValue => widget.asyncValue;
 
   @override
   Widget build(BuildContext context) {
@@ -197,23 +184,22 @@ class _AsyncValueWidgetState<T> extends State<AsyncValueWidget<T>> {
 
   Widget _handleSuccess(T data) {
     _log.i('_handleSuccess()');
-    final result = widget.childBuilder(data);
-    _currentData = data;
+    final result = childBuilder(data);
     return result;
   }
 
   Widget _handleLoading() {
     _log.i('_handleLoading()');
     final loadingWidget = SizedBox(
-      height: widget.containerHeight,
+      height: containerHeight,
       child: Center(
         child: AppLoadingWidget(
-          loadingMessage: widget.loadingMessage,
+          loadingMessage: loadingMessage,
         ),
       ),
     );
 
-    final adaptedLoadingWidget = widget.asSlivers
+    final adaptedLoadingWidget = asSlivers
         ? SliverToBoxAdapter(
             child: loadingWidget,
           )
@@ -225,30 +211,25 @@ class _AsyncValueWidgetState<T> extends State<AsyncValueWidget<T>> {
   Widget _handleError(Object error, StackTrace trace) {
     _log.e('Error in async loading', error: error, stackTrace: trace);
 
-    // if (asyncValue.isLoading) {
-    //   return _handleLoading();
-    // }
-
     final errorWidget = SizedBox(
-      height: widget.containerHeight,
+      height: containerHeight,
       child: Center(
-        child: AppErrorWidget(_errorToString(error), widget.onErrorButtonTap),
+        child: AppErrorWidget(_errorToString(error), onErrorButtonTap),
       ),
     );
 
-    final adaptedErrorWidget = widget.asSlivers
+    final adaptedErrorWidget = asSlivers
         ? SliverToBoxAdapter(
             child: errorWidget,
           )
         : errorWidget;
 
-    if (asyncValue.hasValue || _currentData != null) {
+    if (asyncValue.hasValue) {
       // A SnackBar should have been displayed here
       // It should be handled by one of the handleCommand methods
       return _tryReturningData('error', adaptedErrorWidget);
     }
 
-    _currentData = null;
     return adaptedErrorWidget;
   }
 
@@ -258,13 +239,6 @@ class _AsyncValueWidgetState<T> extends State<AsyncValueWidget<T>> {
       return _handleSuccess(asyncValue.value as T);
     }
 
-    if (_currentData != null) {
-      _log.i(
-          '$stateName state but has a current data: building success instead');
-      return _handleSuccess(_currentData as T);
-    }
-
-    _currentData = null;
     return orElse;
   }
 }

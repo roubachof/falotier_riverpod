@@ -11,8 +11,8 @@ import 'package:loader_overlay/loader_overlay.dart';
 
 class StreetList extends ConsumerWidget {
   const StreetList({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -96,7 +96,7 @@ class StreetLampTile extends StatelessWidget {
   final bool isLampLit;
 
   const StreetLampTile({
-    Key? key,
+    super.key,
     required this.name,
     required this.districtName,
     required this.description,
@@ -104,7 +104,7 @@ class StreetLampTile extends StatelessWidget {
     required this.onRemove,
     required this.isLampLit,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

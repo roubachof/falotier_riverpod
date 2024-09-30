@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'street_list.dart';
 
 class AddStreetScreen extends StatelessWidget {
-  const AddStreetScreen({Key? key}) : super(key: key);
+  const AddStreetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

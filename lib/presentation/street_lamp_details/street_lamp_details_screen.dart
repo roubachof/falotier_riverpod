@@ -13,8 +13,8 @@ class StreetLampDetailsScreen extends ConsumerWidget {
   const StreetLampDetailsScreen({
     required this.streetLampId,
     required this.streetName,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String streetLampId;
   final String streetName;
@@ -34,13 +34,13 @@ class StreetLampDetailsScreen extends ConsumerWidget {
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Stack(
                 children: [
-                  Container(
-                    child: DetailsBody(
-                      id: streetLampId,
-                    ),
+                  DetailsBody(
+                    id: streetLampId,
                   ),
                   Padding(
-                    padding: safeAreaEdges,
+                    padding: safeAreaEdges.copyWith(
+                      top: safeAreaEdges.top + 32,
+                    ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -78,8 +78,8 @@ class StreetLampDetailsScreen extends ConsumerWidget {
 class DetailsBody extends ConsumerStatefulWidget {
   const DetailsBody({
     required this.id,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String id;
 
@@ -226,31 +226,35 @@ class _DetailsBodyState extends ConsumerState<DetailsBody> {
           Colors.black.withOpacity(0),
           Colors.black.withOpacity(0.5),
           Colors.black.withOpacity(0.7),
-          Colors.black.withOpacity(0.9),
+          Colors.black.withOpacity(1),
+          Colors.black.withOpacity(1),
         ],
         stops: const [
           0.1,
           0.3,
           0.7,
           0.9,
+          1,
         ],
       );
     }
 
-    return RadialGradient(
-        center: const Alignment(0.0, -1.0),
-        radius: 2,
+    return LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
         colors: [
           Colors.black.withOpacity(0),
           Colors.black.withOpacity(0.1),
           Colors.black.withOpacity(0.2),
           Colors.black.withOpacity(0.5),
+          Colors.black,
         ],
         stops: const [
           0.4,
           0.5,
           0.6,
           0.7,
+          0.9
         ]);
   }
 
