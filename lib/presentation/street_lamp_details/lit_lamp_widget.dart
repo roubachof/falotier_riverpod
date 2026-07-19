@@ -107,21 +107,20 @@ class _LitLampWidgetState extends ConsumerState<LitLampWidget> {
 
   Future<void> _onTap() async {
     Feedback.forTap(context);
-    setState(() {
-      _action =
-          widget.isLit ? FlameAction.turningOff : FlameAction.turningOn;
-    });
-    try {
-      await ref
-          .read(streetLampStoreProvider.notifier)
-          .toggle(widget.id);
-    } catch (e, t) {
-      handleCommandError(context, e, t);
-    } finally {
-      if (mounted) {
-        setState(() => _action = FlameAction.idle);
-      }
-    }
+    await runCommand(
+      context: context,
+      action: () =>
+          ref.read(streetLampStoreProvider.notifier).toggle(widget.id),
+      onLoadingStart: () => setState(() {
+        _action =
+            widget.isLit ? FlameAction.turningOff : FlameAction.turningOn;
+      }),
+      onLoadingEnd: () {
+        if (mounted) {
+          setState(() => _action = FlameAction.idle);
+        }
+      },
+    );
   }
 
   BoxDecoration _buildFlameDecoration() {

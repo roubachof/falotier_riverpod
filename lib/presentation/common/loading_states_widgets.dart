@@ -20,27 +20,46 @@ handleCommandError(
   );
 }
 
+/// Exécute une commande async avec gestion d'erreur centralisée.
+///
+/// [onLoadingStart] / [onLoadingEnd] laissent le widget piloter son feedback
+/// (spinner local, overlay, animation). L'erreur remonte toujours via
+/// [handleCommandError] → SnackBar.
+Future<void> runCommand({
+  required BuildContext context,
+  required Future Function() action,
+  FutureOr Function()? onSuccess,
+  void Function()? onLoadingStart,
+  void Function()? onLoadingEnd,
+}) async {
+  if (onLoadingStart != null) onLoadingStart();
+  try {
+    await action();
+    if (onSuccess != null) await onSuccess();
+  } catch (e, t) {
+    handleCommandError(context, e, t);
+  } finally {
+    if (onLoadingEnd != null) onLoadingEnd();
+  }
+}
+
 handleAsyncCommand({
   required BuildContext context,
   required Future Function() future,
   FutureOr Function()? onSuccess,
   bool showOverlay = false,
-}) async {
-  try {
-    if (showOverlay) {
-      OverlayControllerWidget.of(context)?.setOverlayVisible(true);
-    }
-    await future();
-    if (onSuccess != null) {
-      await onSuccess();
-    }
-  } catch (e, t) {
-    handleCommandError(context, e, t);
-  } finally {
-    if (showOverlay) {
-      OverlayControllerWidget.of(context)?.setOverlayVisible(false);
-    }
-  }
+}) {
+  return runCommand(
+    context: context,
+    action: future,
+    onSuccess: onSuccess,
+    onLoadingStart: showOverlay
+        ? () => OverlayControllerWidget.of(context)?.setOverlayVisible(true)
+        : null,
+    onLoadingEnd: showOverlay
+        ? () => OverlayControllerWidget.of(context)?.setOverlayVisible(false)
+        : null,
+  );
 }
 
 String _errorToString(Object error) {

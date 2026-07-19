@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lampListHash() => r'1f85c454397d2248d694d0d66fb46f7e7d7c9970';
+String _$lampListHash() => r'0caa5e7d9733f9a54a04954011a7888072834238';
 
 /// See also [LampList].
 @ProviderFor(LampList)

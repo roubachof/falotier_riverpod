@@ -41,18 +41,12 @@ class _IconButtonCommandState extends State<IconButtonCommand> {
     );
   }
 
-  Future _internalOnPressed(BuildContext context) async {
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-      await widget.onPressed();
-    } catch (error, stackTrace) {
-      handleCommandError(context, error, stackTrace);
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  Future _internalOnPressed(BuildContext context) {
+    return runCommand(
+      context: context,
+      action: widget.onPressed,
+      onLoadingStart: () => setState(() => _isLoading = true),
+      onLoadingEnd: () => setState(() => _isLoading = false),
+    );
   }
 }
