@@ -25,10 +25,10 @@ Follow me on twitter @Piskariov, [linkedin](https://www.linkedin.com/in/alfonsi/
 - [x] General architecture
 - [x] Normalized entity store (`StreetLampStore` + derived views)
 - [x] Centralized command error handling (`runCommand` helper)
-- [ ] Implementation details of `loading from scratch`
-- [ ] Implementation details of `refreshing`
-- [ ] Implementation details of `list update`
-- [ ] Implementation details of `item details update`
+- [x] Implementation details of `loading from scratch` ([Case 1](load_from_scratch.md) / [Case 2](load_from_scratch_case2.md))
+- [x] Implementation details of `refreshing` ([refreshing.md](refreshing.md))
+- [x] Implementation details of `list update` ([list_update.md](list_update.md))
+- [x] Implementation details of `item details update` ([item_details_update.md](item_details_update.md))
 
 The architectural decisions and their trade-offs are documented in `proposed_improvements/` (with `validated/` and `implemented/` subfolders tracking the lifecycle of each proposal).
 
@@ -70,7 +70,7 @@ It there is an error during the refresh, we show a `SnackBar`.
 
 ### Riverpod implementation
 
-Coming soon...For now feel free to browse the code.
+[Refreshing: keep the old data visible, surface errors as SnackBars](refreshing.md)
 
 ### List update 
 
@@ -83,7 +83,7 @@ If there was a error during the call, we display a `SnackBar` to our user.
 
 #### Riverpod implementation
 
-Coming soon...For now feel free to browse the code.
+[List update: pessimistic add/remove with DiffUtil animations](list_update.md)
 
 ![add item to a lits](docs/add_item.jpg)
 
@@ -99,7 +99,7 @@ https://user-images.githubusercontent.com/596903/201427126-e86240b6-d567-4178-9a
 
 #### Riverpod implementation
 
-Coming soon...For now feel free to browse the code.
+[List update: pessimistic add/remove with DiffUtil animations](list_update.md)
 
 ### Item details update
 
@@ -116,6 +116,10 @@ The toggle mutation lives on `StreetLampStore` and is **pessimistic**: the canon
 Our architecture propagates the new immutable item everywhere for free: the store is the single source of truth, both the list and the detail screen are derived views, so one write updates both.
 
 https://user-images.githubusercontent.com/596903/201427337-d67bbf4a-46ae-41df-b2ce-80f3d0b9cc94.mp4
+
+### Riverpod implementation
+
+[Item details update: pessimistic toggle with animation, single source of truth](item_details_update.md)
 
 ## The application architecture
 
