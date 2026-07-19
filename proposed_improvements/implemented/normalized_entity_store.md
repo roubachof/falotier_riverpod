@@ -34,11 +34,14 @@ Inspiré de Redux EntityAdapter / NgRx Entity. **Un seul provider tient toutes l
 ```dart
 @Riverpod(keepAlive: true)
 class StreetLampStore extends _$StreetLampStore {
-  late final StreetLampRemoteRepository _repo;
+  // Getter plutôt que 'late final _repo' : build() peut re-tourner après
+  // invalidate (pull-to-refresh, change zone), et un champ 'late final'
+  // lèverait LateInitializationError _throwFieldAlreadyInitialized.
+  StreetLampRemoteRepository get _repo =>
+      ref.read(streetLampRemoteRepositoryProvider);
 
   @override
   Future<Map<String, StreetLamp>> build() async {
-    _repo = ref.watch(streetLampRemoteRepositoryProvider);
     final zone = await ref.watch(selectedZoneProvider.future);
     final lamps = await _repo.getList(zone);
     return {for (final l in lamps) l.id: l};
