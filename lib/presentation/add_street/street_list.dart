@@ -76,7 +76,9 @@ class StreetList extends ConsumerWidget {
     handleAsyncCommand(
       context: context,
       future: () => store.addOrUpdate(streetLamp),
-      onSuccess: () => Navigator.pop(context),
+      onSuccess: () {
+        if (context.mounted) Navigator.pop(context);
+      },
       showOverlay: true,
     );
   }
