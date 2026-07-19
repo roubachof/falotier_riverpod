@@ -23,10 +23,14 @@ Follow me on twitter @Piskariov, [linkedin](https://www.linkedin.com/in/alfonsi/
 - [x] Showcase `falotier_riverpod` ([blog post](https://www.sharpnado.com/falotier-riverpod))
 - [x] Enumerate all the app loading states
 - [x] General architecture
+- [x] Normalized entity store (`StreetLampStore` + derived views)
+- [x] Centralized command error handling (`runCommand` helper)
 - [ ] Implementation details of `loading from scratch`
 - [ ] Implementation details of `refreshing`
 - [ ] Implementation details of `list update`
 - [ ] Implementation details of `item details update`
+
+The architectural decisions and their trade-offs are documented in `proposed_improvements/` (with `validated/` and `implemented/` subfolders tracking the lifecycle of each proposal).
 
 ## Supported use-cases
 
@@ -102,11 +106,13 @@ By taping to a list item, we navigate to a street.\
 By taping on the street lamp, we toggle its light.\
 This is calling a method on the server side.\
 During the remote call, we display an animation of the light which is growing or fading.\
-If it fails, the previous state is restored and we display a `SnackBar`.
+If there is an error during the call, a `SnackBar` is displayed and the lamp stays in its previous state.
 
 ![update an item](docs/lamp_details_update.jpg)
 
-Our architecture must of course propagate the new immutable item to the item list.
+The toggle mutation lives on `StreetLampStore` and is **pessimistic**: the canonical `isLit` value is only flipped after the server confirms. The flame animation (`FlameAction { idle, turningOn, turningOff }`) provides the instant visual feedback during the wait — we don't need optimistic state.
+
+Our architecture propagates the new immutable item everywhere for free: the store is the single source of truth, both the list and the detail screen are derived views, so one write updates both.
 
 https://user-images.githubusercontent.com/596903/201427337-d67bbf4a-46ae-41df-b2ce-80f3d0b9cc94.mp4
 
@@ -233,6 +239,12 @@ If I had a local storage implementation, i'd put it here for example.
 
 ![domain](https://www.sharpnado.com/content/images/2022/12/domain.png)
 
+This layer holds entities, repositories, and providers-as-services. The current `Domain` layer hosts:
+- the `StreetLamp` entity + repository
+- the `CityZone` entity + repository
+- the `StreetLampStore` (single source of truth for lamps) + derived views (`zoneLamps`, `streetLamp`)
+- the `SelectedZone` app-state provider (which zone the user is currently browsing) — yes, in domain, because it's not widget-local ephemeral state, it's a domain-level selection that drives the store's `build()`
+
 #### Entities
 
 Each domain is grouped around an entity.
@@ -348,63 +360,81 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
 
 In the DDD terminology we normally have services that will deal with our entities actions and states. Since we are using `Riverpod`, and to unlock the full potential of the library, we implement our services as providers.
 
+##### The normalized entity store
+
+A single entity should have a single source of truth in the provider graph. Originally falotier had two providers holding `StreetLamp` instances: `ZoneStreetLamps(zone:)` for the list and `StreetLampState(id:)` for the detail, with manual cross-provider sync. This drift-prone setup was replaced by a single **normalized store** inspired by Redux EntityAdapter / NgRx Entity.
+
 ```dart
-import 'street_lamp.dart';
-
-part 'providers.g.dart';
-
 @Riverpod(keepAlive: true)
-class ZoneStreetLamps extends _$ZoneStreetLamps {
-  static final _log = LoggerFactory.logger('ZoneStreetLampsProvider');
+class StreetLampStore extends _$StreetLampStore {
+  static final _log = LoggerFactory.logger('StreetLampStore');
+
+  // Getter plutôt qu'un champ 'late final' : build() peut re-tourner après
+  // invalidate (pull-to-refresh, change zone), et un champ late final lèverait
+  // LateInitializationError _throwFieldAlreadyInitialized.
+  StreetLampRemoteRepository get _repo =>
+      ref.read(streetLampRemoteRepositoryProvider);
 
   @override
-  Future<IList<StreetLamp>> build({required CityZone zone}) async {
-    _log.i('build( isRefreshing: ${state.isRefreshing}, '
-        'isReloading: ${state.isReloading}, '
-        'hasValue: ${state.hasValue} )');
-
-    final repository = ref.watch(streetLampRemoteRepositoryProvider);
-    final lamps = await repository.getList(zone);
-    return lamps.sort(streetLampComparator);
+  Future<Map<String, StreetLamp>> build() async {
+    final zone = await ref.watch(selectedZoneProvider.future);
+    final lamps = await _repo.getList(zone);
+    return {for (final l in lamps) l.id: l};
   }
 
-  Future addOrUpdate(StreetLamp streetLamp) async {
-    _log.i('addOrUpdate( $streetLamp )');
+  Future toggle(String id) async {
+    final previous = state.value!;
+    final lamp = previous[id]!;
+    final updated = lamp.copyWith(isLit: !lamp.isLit);
 
-    final repository = ref.read(streetLampRemoteRepositoryProvider);
-    final updatedLamp = await repository.addOrUpdate(streetLamp);
-
-    await update((currentList) {
-      final updatedList =
-          currentList.updateById([updatedLamp], (item) => item.id);
-      return currentList.length != updatedList.length
-          ? updatedList.sort(streetLampComparator)
-          : updatedList;
-    });
+    await _repo.addOrUpdate(updated);               // pessimistic
+    state = AsyncData({...previous, id: updated});  // single write, after success
   }
 
-  Future remove(StreetLamp streetLamp) async {
-    _log.i('remove( $streetLamp )');
+  Future addOrUpdate(StreetLamp lamp) async {
+    final saved = await _repo.addOrUpdate(lamp);
+    state = AsyncData({...state.value!, saved.id: saved});
+  }
 
-    final repository = ref.read(streetLampRemoteRepositoryProvider);
-    await repository.remove(streetLamp);
-
-    await update((currentList) {
-      return currentList.removeWhere(
-        (element) => element.id == streetLamp.id,
-      );
-    });
+  Future remove(String id) async {
+    final lamp = state.value![id]!;
+    await _repo.remove(lamp);
+    state = AsyncData({...state.value!}..remove(id));
   }
 }
-
 ```
 
-Using providers also bring a caching feature. 
+The store is indexed by id (`Map<String, StreetLamp>`). All mutations are **100% pessimistic**: they `await` the server confirmation before updating state. Optimistic updates with rollback were intentionally not used — local UI feedback (the flame animation in `LitLampWidget`, the global overlay for `remove`) already covers the perceived latency. Adding optimistic state would just duplicate code without visual benefit.
 
-So we don't need a local repository to cache our objects in memory.
-Of course, if we'd need a persistent caching solution, we would need one, maybe implemented with `Hive` or `Isar`.
+The list and detail screens no longer hold entity state themselves. They are pure **derived views** over the store:
 
-Here we can see I use the `keepAlive` option so that my provider will have the same lifetime that my app. Using this property brings us domain-level in-memory caching.
+```dart
+@riverpod
+Future<IList<StreetLamp>> zoneLamps(
+  ZoneLampsRef ref, {
+  required CityZone zone,
+}) async {
+  final store = await ref.watch(streetLampStoreProvider.future);
+  return store.values
+      .where((l) => l.street.zone == zone)
+      .toIList()
+      .sort(streetLampComparator);
+}
+
+@riverpod
+Future<StreetLamp> streetLamp(
+  StreetLampRef ref, {
+  required String id,
+}) async {
+  final store = await ref.watch(streetLampStoreProvider.future);
+  return store[id]!;
+}
+```
+
+One mutation → every view stays consistent. No more manual sync, no more drift. The store is the canonical pattern for "single source of truth in Riverpod" and the right home for entity-level operations.
+
+Using providers also brings a caching feature. With the `keepAlive` option, the store has the same lifetime as the app — domain-level in-memory caching for free. We don't need a local repository to cache our objects in memory.
+(Of course, if we'd need a persistent caching solution, we would need one, maybe implemented with `Hive` or `Isar`.)
 
 #### What about dependency injection?
 
@@ -518,59 +548,66 @@ If if you want to unleash the reactive power of riverpod, you need to use provid
 
 But the good news is that you can still have providers at the presentation-level depending on those at the domain-level.
 
-Let's have a look at the `providers.dart` file in the `home` folder:
+The remaining presentation-level provider, `LampList`, is just a thin cache of the selected zone chaining into the store's derived `zoneLamps` view:
 
 ```dart
-class SelectedZone extends _$SelectedZone {
-  static final _log = LoggerFactory.logger('SelectedZoneProvider');
+@Riverpod(keepAlive: true)
+class LampList extends _$LampList {
+  static final _log = LoggerFactory.logger('LampListProvider');
 
   @override
-  Future<CityZone> build() async {
-    _log.i(
-        'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
+  Future<IList<StreetLamp>> build() async {
+    _log.i('build()');
 
-    // Domain need to be initialized
-    await ref.watch(domainInitializerProvider.future);
-
-    final zones = await ref.watch(availableZonesProvider.future);
-    _log.listCount(zones);
-    return zones[0];
+    final zone = await ref.watch(selectedZoneProvider.future);
+    return ref.watch(zoneLampsProvider(zone: zone).future);
   }
 
-  @override
-  bool updateShouldNotify(
-    AsyncValue<CityZone> previous,
-    AsyncValue<CityZone> next,
-  ) {
-    if (previous.hasValue && next.hasValue) {
-      bool shouldUpdate = previous.value!.id != next.value!.id;
-      _log.i('shouldUpdate: $shouldUpdate');
-      return shouldUpdate;
-    }
-
-    return super.updateShouldNotify(previous, next);
+  Future<void> refresh() {
+    _log.i('refresh()');
+    return ref.refresh(streetLampStoreProvider.future);
   }
 
   void reload() {
     _log.i('reload()');
-
-    ref.invalidate(availableZonesProvider);
-  }
-
-  select(CityZone zone) {
-    _log.i('select( $zone )');
-    update((previousZone) => zone);
+    ref.invalidate(streetLampStoreProvider);
+    ref.invalidateSelf();
   }
 }
 ```
 
-This provider keep the state of the selected city in the home page.
+##### What NOT to put in a provider
 
-![selected_zone](https://www.sharpnado.com/content/images/2022/12/selected_zone.png)
+An earlier iteration had a `LampDetails` provider at the presentation layer that wrapped the lamp detail state and exposed a `toggle()` side-effect. It looked convenient but it violated two Riverpod [DO/DON'T](https://riverpod.dev/docs/root/do_dont) rules:
 
-But it's just maintaining the state in the UI layer, so you can have different caching strategy or lifetime than your domain layer.
+- **"AVOID using providers for Ephemeral state."** Providers are for shared business state, not for widget-local UI state like animation flags.
+- **"DON'T perform side effects during the initialization of a provider."** Providers are read operations, not write operations. Side-effects like `toggle()` belong in mutation methods on the store, not in provider state.
 
-You can also use providers to transform a domain object to a UI object. If you like it that way. Nowadays I just put computed properties that will be displayed in my UI as late properties in my domain objects... 
+The flame animation state (`FlameAction { idle, turningOn, turningOff }`) is now widget-local in `LitLampWidget` via `setState`. The `toggle()` mutation lives on `StreetLampStore`. The widget just calls `store.toggle(id)` and drives its animation on the local `_action` field. Cleaner, and aligned with Riverpod's official guidance.
+
+The `runCommand` helper in `loading_states_widgets.dart` centralizes the `try/catch/finally` + `handleCommandError` pattern that every action-triggering widget needs:
+
+```dart
+Future<void> runCommand({
+  required BuildContext context,
+  required Future Function() action,
+  FutureOr Function()? onSuccess,
+  void Function()? onLoadingStart,
+  void Function()? onLoadingEnd,
+}) async {
+  if (onLoadingStart != null) onLoadingStart();
+  try {
+    await action();
+    if (onSuccess != null) await onSuccess();
+  } catch (e, t) {
+    handleCommandError(context, e, t);
+  } finally {
+    if (onLoadingEnd != null) onLoadingEnd();
+  }
+}
+```
+
+The error path can never be forgotten on a new call site. The widget retains its local loading state (spinner, animation, overlay) through `onLoadingStart` / `onLoadingEnd` callbacks — that part is widget-local UI state and that's fine. When Riverpod v3 `Mutation` lands, `runCommand` will be replaced by `mutation.run(ref, ...)` but the store-level logic stays untouched.
 
 Don't waste time with complexities that add no values.
 
