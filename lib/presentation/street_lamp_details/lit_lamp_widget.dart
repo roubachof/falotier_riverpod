@@ -1,9 +1,10 @@
+import 'package:falotier/domain/street_lamps/providers.dart';
 import 'package:falotier/presentation/common/loading_states_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'providers.dart';
+enum FlameAction { idle, turningOn, turningOff }
 
 class LitLampWidget extends ConsumerStatefulWidget {
   const LitLampWidget({
@@ -20,109 +21,105 @@ class LitLampWidget extends ConsumerStatefulWidget {
 }
 
 class _LitLampWidgetState extends ConsumerState<LitLampWidget> {
-  bool _isLoading = false;
-  bool _isTurningOff = false;
-  bool _isTurningOn = false;
+  FlameAction _action = FlameAction.idle;
+
+  static const _turnOnFadeDuration = Duration(seconds: 5);
+  static const _turnOnScaleDuration = Duration(seconds: 20);
+  static const _turnOffDuration = Duration(seconds: 2);
+  static const _pulseDuration = Duration(seconds: 2);
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading || widget.isLit) {
-      return Transform.translate(
-        offset: const Offset(20, 0),
-        child: Opacity(
-          opacity: 0.7,
-          child: InkWell(
-            onTap: !_isLoading ? _onTap : null,
-            child: _getAnimatedContainer(),
-          ),
+    final isTransitioning = _action != FlameAction.idle;
+    final showFlame = widget.isLit || isTransitioning;
+
+    if (!showFlame) {
+      return InkWell(
+        onTap: _onTap,
+        child: const SizedBox(
+          height: 100,
+          width: 80,
         ),
       );
     }
 
-    return InkWell(
-      onTap: _onTap,
-      child: const SizedBox(
-        height: 100,
-        width: 80,
+    return Transform.translate(
+      offset: const Offset(20, 0),
+      child: Opacity(
+        opacity: 0.7,
+        child: InkWell(
+          onTap: isTransitioning ? null : _onTap,
+          child: _buildFlame(),
+        ),
       ),
     );
   }
 
-  _getAnimatedContainer() {
+  Widget _buildFlame() {
     final container = Container(
       height: 120,
       width: 120,
       decoration: _buildFlameDecoration(),
     );
 
-    if (_isTurningOff) {
-      return container
-          .animate(key: const Key('off'))
+    return switch (_action) {
+      FlameAction.idle => container
+          .animate(
+            key: const Key('flame'),
+            onPlay: (controller) => controller.loop(count: null, reverse: true),
+          )
           .fade(
-            duration: const Duration(milliseconds: 2000),
+            duration: _pulseDuration,
+            begin: 1.0,
+            end: 0.7,
+          )
+          .scale(
+            duration: _pulseDuration,
+            begin: const Offset(0.5, 0.5),
+            end: const Offset(1, 1),
+          ),
+      FlameAction.turningOn => container
+          .animate(key: const Key('on'))
+          .fade(
+            duration: _turnOnFadeDuration,
             begin: 1.0,
             end: 0.2,
           )
           .scale(
-            duration: const Duration(milliseconds: 2000),
-            begin: const Offset(1, 1),
-            end: const Offset(0.2, 0.2),
-          );
-    }
-
-    if (_isTurningOn) {
-      return container
-          .animate(key: const Key('on'))
+            duration: _turnOnScaleDuration,
+            begin: const Offset(0.2, 0.2),
+            end: const Offset(10, 10),
+          ),
+      FlameAction.turningOff => container
+          .animate(key: const Key('off'))
           .fade(
-            duration: const Duration(milliseconds: 5000),
-            begin: 1,
+            duration: _turnOffDuration,
+            begin: 1.0,
             end: 0.2,
           )
           .scale(
-            duration: const Duration(milliseconds: 20000),
-            begin: const Offset(0.2, 0.2),
-            end: const Offset(10, 10),
-          );
-    }
-
-    return container
-        .animate(
-            key: const Key('flame'),
-            onPlay: (controller) => controller.loop(count: null, reverse: true))
-        .fade(
-          duration: const Duration(milliseconds: 2000),
-          begin: 1.0,
-          end: 0.7,
-        )
-        .scale(
-          duration: const Duration(milliseconds: 2000),
-          begin: const Offset(0.5, 0.5),
-          end: const Offset(1, 1),
-        );
+            duration: _turnOffDuration,
+            begin: const Offset(1, 1),
+            end: const Offset(0.2, 0.2),
+          ),
+    };
   }
 
-  _onTap() async {
+  Future<void> _onTap() async {
     Feedback.forTap(context);
+    setState(() {
+      _action =
+          widget.isLit ? FlameAction.turningOff : FlameAction.turningOn;
+    });
     try {
-      if (widget.isLit) {
-        _isTurningOff = true;
-      } else {
-        _isTurningOn = true;
-      }
-
-      setState(() {
-        _isLoading = true;
-      });
-
-      await ref.read(lampDetailsProvider(lampId: widget.id).notifier).toggle();
+      await ref
+          .read(streetLampStoreProvider.notifier)
+          .toggle(widget.id);
     } catch (e, t) {
       handleCommandError(context, e, t);
     } finally {
-      _isTurningOff = _isTurningOn = false;
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _action = FlameAction.idle);
       }
     }
   }

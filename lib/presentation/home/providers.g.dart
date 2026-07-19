@@ -6,22 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectedZoneHash() => r'80fc7edfd163522528aa0da831ac4fbff13f3fac';
-
-/// See also [SelectedZone].
-@ProviderFor(SelectedZone)
-final selectedZoneProvider =
-    AsyncNotifierProvider<SelectedZone, CityZone>.internal(
-  SelectedZone.new,
-  name: r'selectedZoneProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$selectedZoneHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$SelectedZone = AsyncNotifier<CityZone>;
-String _$lampListHash() => r'a6b3e57d211cf3b67906f6157cc2ad6a1813e888';
+String _$lampListHash() => r'1f85c454397d2248d694d0d66fb46f7e7d7c9970';
 
 /// See also [LampList].
 @ProviderFor(LampList)
@@ -37,4 +22,4 @@ final lampListProvider =
 
 typedef _$LampList = AsyncNotifier<IList<StreetLamp>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,5 +1,7 @@
 import 'package:diffutil_sliverlist/diffutil_sliverlist.dart';
+import 'package:falotier/domain/city_zones/providers.dart';
 import 'package:falotier/domain/domain_initializer.dart';
+import 'package:falotier/domain/street_lamps/providers.dart';
 import 'package:falotier/domain/street_lamps/street_lamp.dart';
 import 'package:falotier/presentation/common/loading_states_widgets.dart';
 import 'package:falotier/routes.dart';
@@ -60,7 +62,7 @@ class StreetLampList extends ConsumerWidget {
                     $extra: lamp.street.name,
                   ).push(context),
                   onRemove: () =>
-                      ref.read(lampListProvider.notifier).remove(lamp),
+                      ref.read(streetLampStoreProvider.notifier).remove(lamp.id),
                   isLampLit: lamp.isLit,
                 ),
               );

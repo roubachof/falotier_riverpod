@@ -29,6 +29,8 @@ Inspiré de Redux EntityAdapter / NgRx Entity. **Un seul provider tient toutes l
 
 ### Le store canonique
 
+> **Stratégie : 100% pessimiste.** Toutes les mutations attendent la confirmation serveur avant de mettre à jour l'état. Pas d'optimiste, pas de rollback. Voir `command_pattern_consolidation.md` section 2 pour la justification complète (les animations UI locales donnent déjà le feedback instantané, l'optimiste n'apporterait rien).
+
 ```dart
 @Riverpod(keepAlive: true)
 class StreetLampStore extends _$StreetLampStore {
@@ -47,25 +49,19 @@ class StreetLampStore extends _$StreetLampStore {
     final lamp = store[id]!;
     final updated = lamp.copyWith(isLit: !lamp.isLit);
 
-    // optimiste : on flit tout de suite
-    state = AsyncData({...store, id: updated});
-    try {
-      await _repo.addOrUpdate(updated);
-    } catch (e) {
-      state = AsyncData({...store, id: lamp}); // rollback
-      rethrow;
-    }
+    await _repo.addOrUpdate(updated);                 // pessimiste
+    state = AsyncData({...store, id: updated});       // une seule écriture, après succès
   }
 
   Future addOrUpdate(StreetLamp lamp) async {
-    final saved = await _repo.addOrUpdate(lamp);
+    final saved = await _repo.addOrUpdate(lamp);      // pessimiste
     state = AsyncValue.data({...state.value!, saved.id: saved});
   }
 
   Future remove(String id) async {
-    await _repo.remove(state.value![id]!);
-    final next = Map.of(state.value!)..remove(id);
-    state = AsyncValue.data(next);
+    final lamp = state.value![id]!;
+    await _repo.remove(lamp);                          // pessimiste
+    state = AsyncValue.data({...state.value!}..remove(id));
   }
 }
 ```
@@ -105,7 +101,7 @@ Côté widget, rien ne change : `ref.watch(zoneLampsProvider(zone: zone))` renvo
 - **Le pass-through `LampList`.** Son `build` chain `selectedZone` → `zoneStreetLamps`, et `addOrUpdate` / `remove` / `refresh` délèguent tout (`lib/presentation/home/providers.dart`). Avec `zoneLamps` dérivé, le widget peut watcher directement et `LampList` devient inutile (ou se réduit à un cache de `selectedZone`).
 - **Le `selectedZone` mutable en champ d'instance** dans `LampList` (`providers.dart:59`) — il disparaît avec le pass-through.
 - **`AvailableStreets` se simplifie.** Aujourd'hui il watch `zoneStreetLampsProvider` + `streetsProvider` et fait une différence d'ensembles (`lib/domain/city_zones/providers.dart:31-39`). Avec le store, c'est `allStreets.where((s) => !store.values.any((l) => l.street == s))` — une seule source.
-- **L'état local de `LitLampWidget`.** En optimiste, `isLit` flit instantanément côté store, l'animation se drive sur le changement de data, pas sur `_isLoading` / `_isTurningOn` / `_isTurningOff` en `setState` parallèle (`lib/presentation/street_lamp_details/lit_lamp_widget.dart:23-25`).
+- **L'état local de `LitLampWidget`.** L'animation `_action` (`FlameAction { idle, turningOn, turningOff }`) reste widget-local — c'est l'état d'action visuel pendant l'appel serveur. Mais le flip de `isLit` côté data se fait quand le serveur confirme, dans une seule écriture du store. Plus besoin du mixte "optimiste UI + pessimiste data" qui rendait le code incohérent (`lib/presentation/street_lamp_details/lit_lamp_widget.dart:23-25`).
 
 ## Coûts et questions à trancher
 
@@ -127,7 +123,7 @@ Si on peut naviguer au détail sans passer par la liste (deep link, push notif),
 Pour 1 zone et 8 lamps, le `StreetLampState.updateLight` manuel fonctionne et est court. Le normalized store paye vraiment quand :
 
 - plusieurs vues de la même entité (liste + détail + recherche + map) ;
-- des updates optimistes avec rollback ;
+- des mutations à synchroniser entre plusieurs vues (le cas de falotier : liste + détail) ;
 - des entités référencées par d'autres (jointures normalisées) ;
 - la cardinalité explose.
 

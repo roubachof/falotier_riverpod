@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$zoneStreetLampsHash() => r'9a90efa366c661d6738ef575e466af39033bc6c0';
+String _$zoneLampsHash() => r'45ae7976769f95a71d7712fbff76b0fd49c14213';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +29,27 @@ class _SystemHash {
   }
 }
 
-abstract class _$ZoneStreetLamps
-    extends BuildlessAsyncNotifier<IList<StreetLamp>> {
-  late final CityZone zone;
+/// See also [zoneLamps].
+@ProviderFor(zoneLamps)
+const zoneLampsProvider = ZoneLampsFamily();
 
-  FutureOr<IList<StreetLamp>> build({
-    required CityZone zone,
-  });
-}
+/// See also [zoneLamps].
+class ZoneLampsFamily extends Family<AsyncValue<IList<StreetLamp>>> {
+  /// See also [zoneLamps].
+  const ZoneLampsFamily();
 
-/// See also [ZoneStreetLamps].
-@ProviderFor(ZoneStreetLamps)
-const zoneStreetLampsProvider = ZoneStreetLampsFamily();
-
-/// See also [ZoneStreetLamps].
-class ZoneStreetLampsFamily extends Family<AsyncValue<IList<StreetLamp>>> {
-  /// See also [ZoneStreetLamps].
-  const ZoneStreetLampsFamily();
-
-  /// See also [ZoneStreetLamps].
-  ZoneStreetLampsProvider call({
+  /// See also [zoneLamps].
+  ZoneLampsProvider call({
     required CityZone zone,
   }) {
-    return ZoneStreetLampsProvider(
+    return ZoneLampsProvider(
       zone: zone,
     );
   }
 
   @override
-  ZoneStreetLampsProvider getProviderOverride(
-    covariant ZoneStreetLampsProvider provider,
+  ZoneLampsProvider getProviderOverride(
+    covariant ZoneLampsProvider provider,
   ) {
     return call(
       zone: provider.zone,
@@ -77,30 +68,31 @@ class ZoneStreetLampsFamily extends Family<AsyncValue<IList<StreetLamp>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'zoneStreetLampsProvider';
+  String? get name => r'zoneLampsProvider';
 }
 
-/// See also [ZoneStreetLamps].
-class ZoneStreetLampsProvider
-    extends AsyncNotifierProviderImpl<ZoneStreetLamps, IList<StreetLamp>> {
-  /// See also [ZoneStreetLamps].
-  ZoneStreetLampsProvider({
+/// See also [zoneLamps].
+class ZoneLampsProvider extends AutoDisposeFutureProvider<IList<StreetLamp>> {
+  /// See also [zoneLamps].
+  ZoneLampsProvider({
     required CityZone zone,
   }) : this._internal(
-          () => ZoneStreetLamps()..zone = zone,
-          from: zoneStreetLampsProvider,
-          name: r'zoneStreetLampsProvider',
+          (ref) => zoneLamps(
+            ref as ZoneLampsRef,
+            zone: zone,
+          ),
+          from: zoneLampsProvider,
+          name: r'zoneLampsProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$zoneStreetLampsHash,
-          dependencies: ZoneStreetLampsFamily._dependencies,
-          allTransitiveDependencies:
-              ZoneStreetLampsFamily._allTransitiveDependencies,
+                  : _$zoneLampsHash,
+          dependencies: ZoneLampsFamily._dependencies,
+          allTransitiveDependencies: ZoneLampsFamily._allTransitiveDependencies,
           zone: zone,
         );
 
-  ZoneStreetLampsProvider._internal(
+  ZoneLampsProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,20 +105,13 @@ class ZoneStreetLampsProvider
   final CityZone zone;
 
   @override
-  FutureOr<IList<StreetLamp>> runNotifierBuild(
-    covariant ZoneStreetLamps notifier,
+  Override overrideWith(
+    FutureOr<IList<StreetLamp>> Function(ZoneLampsRef provider) create,
   ) {
-    return notifier.build(
-      zone: zone,
-    );
-  }
-
-  @override
-  Override overrideWith(ZoneStreetLamps Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ZoneStreetLampsProvider._internal(
-        () => create()..zone = zone,
+      override: ZoneLampsProvider._internal(
+        (ref) => create(ref as ZoneLampsRef),
         from: from,
         name: null,
         dependencies: null,
@@ -138,14 +123,13 @@ class ZoneStreetLampsProvider
   }
 
   @override
-  AsyncNotifierProviderElement<ZoneStreetLamps, IList<StreetLamp>>
-      createElement() {
-    return _ZoneStreetLampsProviderElement(this);
+  AutoDisposeFutureProviderElement<IList<StreetLamp>> createElement() {
+    return _ZoneLampsProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ZoneStreetLampsProvider && other.zone == zone;
+    return other is ZoneLampsProvider && other.zone == zone;
   }
 
   @override
@@ -157,51 +141,45 @@ class ZoneStreetLampsProvider
   }
 }
 
-mixin ZoneStreetLampsRef on AsyncNotifierProviderRef<IList<StreetLamp>> {
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ZoneLampsRef on AutoDisposeFutureProviderRef<IList<StreetLamp>> {
   /// The parameter `zone` of this provider.
   CityZone get zone;
 }
 
-class _ZoneStreetLampsProviderElement
-    extends AsyncNotifierProviderElement<ZoneStreetLamps, IList<StreetLamp>>
-    with ZoneStreetLampsRef {
-  _ZoneStreetLampsProviderElement(super.provider);
+class _ZoneLampsProviderElement
+    extends AutoDisposeFutureProviderElement<IList<StreetLamp>>
+    with ZoneLampsRef {
+  _ZoneLampsProviderElement(super.provider);
 
   @override
-  CityZone get zone => (origin as ZoneStreetLampsProvider).zone;
+  CityZone get zone => (origin as ZoneLampsProvider).zone;
 }
 
-String _$streetLampStateHash() => r'e7df0d733272827f99280b81ac9fcd000a38f183';
+String _$streetLampHash() => r'5a1cb4de3bf0baf8d723d88a877b684603bd138a';
 
-abstract class _$StreetLampState extends BuildlessAsyncNotifier<StreetLamp> {
-  late final String id;
+/// See also [streetLamp].
+@ProviderFor(streetLamp)
+const streetLampProvider = StreetLampFamily();
 
-  FutureOr<StreetLamp> build({
-    required String id,
-  });
-}
+/// See also [streetLamp].
+class StreetLampFamily extends Family<AsyncValue<StreetLamp>> {
+  /// See also [streetLamp].
+  const StreetLampFamily();
 
-/// See also [StreetLampState].
-@ProviderFor(StreetLampState)
-const streetLampStateProvider = StreetLampStateFamily();
-
-/// See also [StreetLampState].
-class StreetLampStateFamily extends Family<AsyncValue<StreetLamp>> {
-  /// See also [StreetLampState].
-  const StreetLampStateFamily();
-
-  /// See also [StreetLampState].
-  StreetLampStateProvider call({
+  /// See also [streetLamp].
+  StreetLampProvider call({
     required String id,
   }) {
-    return StreetLampStateProvider(
+    return StreetLampProvider(
       id: id,
     );
   }
 
   @override
-  StreetLampStateProvider getProviderOverride(
-    covariant StreetLampStateProvider provider,
+  StreetLampProvider getProviderOverride(
+    covariant StreetLampProvider provider,
   ) {
     return call(
       id: provider.id,
@@ -220,30 +198,32 @@ class StreetLampStateFamily extends Family<AsyncValue<StreetLamp>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'streetLampStateProvider';
+  String? get name => r'streetLampProvider';
 }
 
-/// See also [StreetLampState].
-class StreetLampStateProvider
-    extends AsyncNotifierProviderImpl<StreetLampState, StreetLamp> {
-  /// See also [StreetLampState].
-  StreetLampStateProvider({
+/// See also [streetLamp].
+class StreetLampProvider extends AutoDisposeFutureProvider<StreetLamp> {
+  /// See also [streetLamp].
+  StreetLampProvider({
     required String id,
   }) : this._internal(
-          () => StreetLampState()..id = id,
-          from: streetLampStateProvider,
-          name: r'streetLampStateProvider',
+          (ref) => streetLamp(
+            ref as StreetLampRef,
+            id: id,
+          ),
+          from: streetLampProvider,
+          name: r'streetLampProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$streetLampStateHash,
-          dependencies: StreetLampStateFamily._dependencies,
+                  : _$streetLampHash,
+          dependencies: StreetLampFamily._dependencies,
           allTransitiveDependencies:
-              StreetLampStateFamily._allTransitiveDependencies,
+              StreetLampFamily._allTransitiveDependencies,
           id: id,
         );
 
-  StreetLampStateProvider._internal(
+  StreetLampProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -256,20 +236,13 @@ class StreetLampStateProvider
   final String id;
 
   @override
-  FutureOr<StreetLamp> runNotifierBuild(
-    covariant StreetLampState notifier,
+  Override overrideWith(
+    FutureOr<StreetLamp> Function(StreetLampRef provider) create,
   ) {
-    return notifier.build(
-      id: id,
-    );
-  }
-
-  @override
-  Override overrideWith(StreetLampState Function() create) {
     return ProviderOverride(
       origin: this,
-      override: StreetLampStateProvider._internal(
-        () => create()..id = id,
+      override: StreetLampProvider._internal(
+        (ref) => create(ref as StreetLampRef),
         from: from,
         name: null,
         dependencies: null,
@@ -281,13 +254,13 @@ class StreetLampStateProvider
   }
 
   @override
-  AsyncNotifierProviderElement<StreetLampState, StreetLamp> createElement() {
-    return _StreetLampStateProviderElement(this);
+  AutoDisposeFutureProviderElement<StreetLamp> createElement() {
+    return _StreetLampProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is StreetLampStateProvider && other.id == id;
+    return other is StreetLampProvider && other.id == id;
   }
 
   @override
@@ -299,18 +272,181 @@ class StreetLampStateProvider
   }
 }
 
-mixin StreetLampStateRef on AsyncNotifierProviderRef<StreetLamp> {
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin StreetLampRef on AutoDisposeFutureProviderRef<StreetLamp> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
-class _StreetLampStateProviderElement
-    extends AsyncNotifierProviderElement<StreetLampState, StreetLamp>
-    with StreetLampStateRef {
-  _StreetLampStateProviderElement(super.provider);
+class _StreetLampProviderElement
+    extends AutoDisposeFutureProviderElement<StreetLamp> with StreetLampRef {
+  _StreetLampProviderElement(super.provider);
 
   @override
-  String get id => (origin as StreetLampStateProvider).id;
+  String get id => (origin as StreetLampProvider).id;
+}
+
+String _$streetLampStoreHash() => r'3558f0a20854e49e449302dd3a2cfd79fe958a7e';
+
+/// See also [StreetLampStore].
+@ProviderFor(StreetLampStore)
+final streetLampStoreProvider =
+    AsyncNotifierProvider<StreetLampStore, Map<String, StreetLamp>>.internal(
+  StreetLampStore.new,
+  name: r'streetLampStoreProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$streetLampStoreHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$StreetLampStore = AsyncNotifier<Map<String, StreetLamp>>;
+String _$availableStreetsHash() => r'f61e9828e13d7355d3682be284e58ee53058ac5b';
+
+abstract class _$AvailableStreets
+    extends BuildlessAsyncNotifier<IList<Street>> {
+  late final CityZone zone;
+
+  FutureOr<IList<Street>> build({
+    required CityZone zone,
+  });
+}
+
+/// See also [AvailableStreets].
+@ProviderFor(AvailableStreets)
+const availableStreetsProvider = AvailableStreetsFamily();
+
+/// See also [AvailableStreets].
+class AvailableStreetsFamily extends Family<AsyncValue<IList<Street>>> {
+  /// See also [AvailableStreets].
+  const AvailableStreetsFamily();
+
+  /// See also [AvailableStreets].
+  AvailableStreetsProvider call({
+    required CityZone zone,
+  }) {
+    return AvailableStreetsProvider(
+      zone: zone,
+    );
+  }
+
+  @override
+  AvailableStreetsProvider getProviderOverride(
+    covariant AvailableStreetsProvider provider,
+  ) {
+    return call(
+      zone: provider.zone,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'availableStreetsProvider';
+}
+
+/// See also [AvailableStreets].
+class AvailableStreetsProvider
+    extends AsyncNotifierProviderImpl<AvailableStreets, IList<Street>> {
+  /// See also [AvailableStreets].
+  AvailableStreetsProvider({
+    required CityZone zone,
+  }) : this._internal(
+          () => AvailableStreets()..zone = zone,
+          from: availableStreetsProvider,
+          name: r'availableStreetsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$availableStreetsHash,
+          dependencies: AvailableStreetsFamily._dependencies,
+          allTransitiveDependencies:
+              AvailableStreetsFamily._allTransitiveDependencies,
+          zone: zone,
+        );
+
+  AvailableStreetsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.zone,
+  }) : super.internal();
+
+  final CityZone zone;
+
+  @override
+  FutureOr<IList<Street>> runNotifierBuild(
+    covariant AvailableStreets notifier,
+  ) {
+    return notifier.build(
+      zone: zone,
+    );
+  }
+
+  @override
+  Override overrideWith(AvailableStreets Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AvailableStreetsProvider._internal(
+        () => create()..zone = zone,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        zone: zone,
+      ),
+    );
+  }
+
+  @override
+  AsyncNotifierProviderElement<AvailableStreets, IList<Street>>
+      createElement() {
+    return _AvailableStreetsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AvailableStreetsProvider && other.zone == zone;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, zone.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin AvailableStreetsRef on AsyncNotifierProviderRef<IList<Street>> {
+  /// The parameter `zone` of this provider.
+  CityZone get zone;
+}
+
+class _AvailableStreetsProviderElement
+    extends AsyncNotifierProviderElement<AvailableStreets, IList<Street>>
+    with AvailableStreetsRef {
+  _AvailableStreetsProviderElement(super.provider);
+
+  @override
+  CityZone get zone => (origin as AvailableStreetsProvider).zone;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

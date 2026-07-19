@@ -94,13 +94,12 @@ class _DetailsBodyState extends ConsumerState<DetailsBody> {
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
 
-    final lampAsyncValue = ref.watch(streetLampStateProvider(id: widget.id));
+    final lampAsyncValue = ref.watch(streetLampProvider(id: widget.id));
 
     return AsyncValueWidget<StreetLamp>(
       lampAsyncValue,
       containerHeight: 500,
-      onErrorButtonTap: () =>
-          ref.refresh(streetLampStateProvider(id: widget.id)),
+      onErrorButtonTap: () => ref.invalidate(streetLampStoreProvider),
       childBuilder: (lamp) {
         final foregroundColor = !lamp.isLit
             ? theme.colors.foregroundAtNight

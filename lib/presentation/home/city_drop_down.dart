@@ -5,8 +5,6 @@ import 'package:falotier_design/falotier_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'providers.dart';
-
 class CityDropDown extends ConsumerWidget {
   const CityDropDown({super.key});
 

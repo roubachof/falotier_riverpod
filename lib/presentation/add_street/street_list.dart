@@ -1,8 +1,8 @@
 import 'package:falotier/domain/city_zones/providers.dart';
 import 'package:falotier/domain/city_zones/street.dart';
+import 'package:falotier/domain/street_lamps/providers.dart';
 import 'package:falotier/domain/street_lamps/street_lamp.dart';
 import 'package:falotier/presentation/common/loading_states_widgets.dart';
-import 'package:falotier/presentation/home/providers.dart';
 import 'package:falotier_design/falotier_design.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
@@ -71,11 +71,11 @@ class StreetList extends ConsumerWidget {
     Street data,
     WidgetRef ref,
   ) {
-    final streetLampNotifier = ref.watch(lampListProvider.notifier);
+    final store = ref.read(streetLampStoreProvider.notifier);
     final streetLamp = StreetLamp.fromStreet(data);
     handleAsyncCommand(
       context: context,
-      future: () => streetLampNotifier.addOrUpdate(streetLamp),
+      future: () => store.addOrUpdate(streetLamp),
       onSuccess: () => Navigator.pop(context),
       showOverlay: true,
     );

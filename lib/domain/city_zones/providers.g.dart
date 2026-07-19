@@ -20,6 +20,8 @@ final availableZonesProvider = FutureProvider<IList<CityZone>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AvailableZonesRef = FutureProviderRef<IList<CityZone>>;
 String _$streetsHash() => r'7c0ba00f9ce79466720c4af5be70fa9925219895';
 
@@ -156,6 +158,8 @@ class StreetsProvider extends FutureProvider<IList<Street>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin StreetsRef on FutureProviderRef<IList<Street>> {
   /// The parameter `zone` of this provider.
   CityZone get zone;
@@ -169,148 +173,20 @@ class _StreetsProviderElement extends FutureProviderElement<IList<Street>>
   CityZone get zone => (origin as StreetsProvider).zone;
 }
 
-String _$availableStreetsHash() => r'c1e01fb7012f09718af917461020f7ad2bea8574';
+String _$selectedZoneHash() => r'80fc7edfd163522528aa0da831ac4fbff13f3fac';
 
-abstract class _$AvailableStreets
-    extends BuildlessAsyncNotifier<IList<Street>> {
-  late final CityZone zone;
+/// See also [SelectedZone].
+@ProviderFor(SelectedZone)
+final selectedZoneProvider =
+    AsyncNotifierProvider<SelectedZone, CityZone>.internal(
+  SelectedZone.new,
+  name: r'selectedZoneProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$selectedZoneHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
-  FutureOr<IList<Street>> build({
-    required CityZone zone,
-  });
-}
-
-/// See also [AvailableStreets].
-@ProviderFor(AvailableStreets)
-const availableStreetsProvider = AvailableStreetsFamily();
-
-/// See also [AvailableStreets].
-class AvailableStreetsFamily extends Family<AsyncValue<IList<Street>>> {
-  /// See also [AvailableStreets].
-  const AvailableStreetsFamily();
-
-  /// See also [AvailableStreets].
-  AvailableStreetsProvider call({
-    required CityZone zone,
-  }) {
-    return AvailableStreetsProvider(
-      zone: zone,
-    );
-  }
-
-  @override
-  AvailableStreetsProvider getProviderOverride(
-    covariant AvailableStreetsProvider provider,
-  ) {
-    return call(
-      zone: provider.zone,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'availableStreetsProvider';
-}
-
-/// See also [AvailableStreets].
-class AvailableStreetsProvider
-    extends AsyncNotifierProviderImpl<AvailableStreets, IList<Street>> {
-  /// See also [AvailableStreets].
-  AvailableStreetsProvider({
-    required CityZone zone,
-  }) : this._internal(
-          () => AvailableStreets()..zone = zone,
-          from: availableStreetsProvider,
-          name: r'availableStreetsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$availableStreetsHash,
-          dependencies: AvailableStreetsFamily._dependencies,
-          allTransitiveDependencies:
-              AvailableStreetsFamily._allTransitiveDependencies,
-          zone: zone,
-        );
-
-  AvailableStreetsProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.zone,
-  }) : super.internal();
-
-  final CityZone zone;
-
-  @override
-  FutureOr<IList<Street>> runNotifierBuild(
-    covariant AvailableStreets notifier,
-  ) {
-    return notifier.build(
-      zone: zone,
-    );
-  }
-
-  @override
-  Override overrideWith(AvailableStreets Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: AvailableStreetsProvider._internal(
-        () => create()..zone = zone,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        zone: zone,
-      ),
-    );
-  }
-
-  @override
-  AsyncNotifierProviderElement<AvailableStreets, IList<Street>>
-      createElement() {
-    return _AvailableStreetsProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is AvailableStreetsProvider && other.zone == zone;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, zone.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin AvailableStreetsRef on AsyncNotifierProviderRef<IList<Street>> {
-  /// The parameter `zone` of this provider.
-  CityZone get zone;
-}
-
-class _AvailableStreetsProviderElement
-    extends AsyncNotifierProviderElement<AvailableStreets, IList<Street>>
-    with AvailableStreetsRef {
-  _AvailableStreetsProviderElement(super.provider);
-
-  @override
-  CityZone get zone => (origin as AvailableStreetsProvider).zone;
-}
+typedef _$SelectedZone = AsyncNotifier<CityZone>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

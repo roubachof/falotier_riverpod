@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:falotier/domain/city_zones/city_zone.dart';
+import 'package:falotier/domain/city_zones/providers.dart';
+import 'package:falotier/domain/city_zones/street.dart';
 import 'package:falotier/domain/street_lamps/interfaces.dart';
 import 'package:falotier/infrastructure/logger_factory.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
@@ -11,72 +13,93 @@ import 'street_lamp.dart';
 part 'providers.g.dart';
 
 @Riverpod(keepAlive: true)
-class ZoneStreetLamps extends _$ZoneStreetLamps {
-  static final _log = LoggerFactory.logger('ZoneStreetLampsProvider');
+class StreetLampStore extends _$StreetLampStore {
+  static final _log = LoggerFactory.logger('StreetLampStore');
+
+  late final StreetLampRemoteRepository _repo;
 
   @override
-  Future<IList<StreetLamp>> build({required CityZone zone}) async {
-    _log.i('build( isRefreshing: ${state.isRefreshing}, '
-        'isReloading: ${state.isReloading}, '
-        'hasValue: ${state.hasValue} )');
+  Future<Map<String, StreetLamp>> build() async {
+    _log.i('build()');
+    _repo = ref.watch(streetLampRemoteRepositoryProvider);
 
-    final repository = ref.watch(streetLampRemoteRepositoryProvider);
-    final lamps = await repository.getList(zone);
-    return lamps.sort(streetLampComparator);
+    final zone = await ref.watch(selectedZoneProvider.future);
+    final lamps = await _repo.getList(zone);
+    return {for (final l in lamps) l.id: l};
   }
 
-  Future addOrUpdate(StreetLamp streetLamp) async {
-    _log.i('addOrUpdate( $streetLamp )');
+  Future toggle(String id) async {
+    _log.i('toggle( $id )');
+    final previous = state.value!;
+    final lamp = previous[id]!;
+    final updated = lamp.copyWith(isLit: !lamp.isLit);
 
-    final repository = ref.read(streetLampRemoteRepositoryProvider);
-    final updatedLamp = await repository.addOrUpdate(streetLamp);
-
-    await update((currentList) {
-      final updatedList =
-          currentList.updateById([updatedLamp], (item) => item.id);
-      return currentList.length != updatedList.length
-          ? updatedList.sort(streetLampComparator)
-          : updatedList;
-    });
+    await _repo.addOrUpdate(updated);
+    state = AsyncData({...previous, id: updated});
   }
 
-  Future remove(StreetLamp streetLamp) async {
-    _log.i('remove( $streetLamp )');
+  Future addOrUpdate(StreetLamp lamp) async {
+    _log.i('addOrUpdate( $lamp )');
+    final saved = await _repo.addOrUpdate(lamp);
+    state = AsyncData({...state.value!, saved.id: saved});
+  }
 
-    final repository = ref.read(streetLampRemoteRepositoryProvider);
-    await repository.remove(streetLamp);
-
-    await update((currentList) {
-      return currentList.removeWhere(
-        (element) => element.id == streetLamp.id,
-      );
-    });
+  Future remove(String id) async {
+    _log.i('remove( $id )');
+    final lamp = state.value![id]!;
+    await _repo.remove(lamp);
+    state = AsyncData({...state.value!}..remove(id));
   }
 }
 
+@riverpod
+Future<IList<StreetLamp>> zoneLamps(
+  ZoneLampsRef ref, {
+  required CityZone zone,
+}) async {
+  final store = await ref.watch(streetLampStoreProvider.future);
+  return store.values
+      .where((l) => l.street.zone == zone)
+      .toIList()
+      .sort(streetLampComparator);
+}
+
+@riverpod
+Future<StreetLamp> streetLamp(
+  StreetLampRef ref, {
+  required String id,
+}) async {
+  final store = await ref.watch(streetLampStoreProvider.future);
+  return store[id]!;
+}
+
 @Riverpod(keepAlive: true)
-class StreetLampState extends _$StreetLampState {
-  static final _log = LoggerFactory.logger('StreetLampStateProvider');
+class AvailableStreets extends _$AvailableStreets {
+  static final _log = LoggerFactory.logger('AvailableStreetsProvider');
 
   @override
-  Future<StreetLamp> build({required String id}) {
-    _log.i('build( $id )');
-    return ref.watch(streetLampRemoteRepositoryProvider).get(id);
+  Future<IList<Street>> build({required CityZone zone}) async {
+    _log.i('build()');
+
+    final lampStore = await ref.watch(streetLampStoreProvider.future);
+    final allStreets = await ref.watch(streetsProvider(zone: zone).future);
+
+    final streetsWithLamp = lampStore.values
+        .where((l) => l.street.zone == zone)
+        .map((l) => l.street)
+        .toSet();
+
+    return allStreets
+        .asSet()
+        .difference(streetsWithLamp)
+        .toIList()
+        .sort(streetComparator);
   }
 
-  Future updateLight(bool isLit) async {
-    _log.i('updateLight( $id, isLit: $isLit )');
+  reload() {
+    _log.i('reload()');
 
-    if (!state.hasValue || state.value!.isLit == isLit) {
-      return;
-    }
-
-    final streetLamp = state.value!;
-    final updatedStreetLamp = streetLamp.copyWith(isLit: isLit);
-    final zoneStreetLamps = ref
-        .read(zoneStreetLampsProvider(zone: streetLamp.street.zone).notifier);
-
-    await zoneStreetLamps.addOrUpdate(updatedStreetLamp);
-    state = AsyncData(updatedStreetLamp);
+    ref.invalidate(streetLampStoreProvider);
+    ref.invalidate(streetsProvider(zone: zone));
   }
 }

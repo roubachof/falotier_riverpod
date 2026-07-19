@@ -1,7 +1,7 @@
 import 'package:falotier/domain/city_zones/city_zone.dart';
 import 'package:falotier/domain/city_zones/interfaces.dart';
 import 'package:falotier/domain/city_zones/street.dart';
-import 'package:falotier/domain/street_lamps/providers.dart';
+import 'package:falotier/domain/domain_initializer.dart';
 import 'package:falotier/infrastructure/logger_factory.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,28 +21,43 @@ Future<IList<Street>> streets(StreetsRef ref, {required CityZone zone}) {
 }
 
 @Riverpod(keepAlive: true)
-class AvailableStreets extends _$AvailableStreets {
-  static final _log = LoggerFactory.logger('AvailableStreetsProvider');
+class SelectedZone extends _$SelectedZone {
+  static final _log = LoggerFactory.logger('SelectedZoneProvider');
 
   @override
-  Future<IList<Street>> build({required CityZone zone}) async {
-    _log.i('build()');
+  Future<CityZone> build() async {
+    _log.i(
+        'build( isRefreshing: ${state.isRefreshing}, isReloading: ${state.isReloading}, hasValue: ${state.hasValue} )');
 
-    final streetsWithLamp =
-        await ref.watch(zoneStreetLampsProvider(zone: zone).future);
-    final allStreets = await ref.watch(streetsProvider(zone: zone).future);
+    await ref.watch(domainInitializerProvider.future);
 
-    return allStreets
-        .asSet()
-        .difference(streetsWithLamp.map((l) => l.street).asSet())
-        .toIList()
-        .sort(streetComparator);
+    final zones = await ref.watch(availableZonesProvider.future);
+    _log.listCount(zones);
+    return zones[0];
   }
 
-  reload() {
+  @override
+  bool updateShouldNotify(
+    AsyncValue<CityZone> previous,
+    AsyncValue<CityZone> next,
+  ) {
+    if (previous.hasValue && next.hasValue) {
+      bool shouldUpdate = previous.value!.id != next.value!.id;
+      _log.i('shouldUpdate: $shouldUpdate');
+      return shouldUpdate;
+    }
+
+    return super.updateShouldNotify(previous, next);
+  }
+
+  void reload() {
     _log.i('reload()');
 
-    ref.invalidate(zoneStreetLampsProvider(zone: zone));
-    ref.invalidate(streetsProvider(zone: zone));
+    ref.invalidate(availableZonesProvider);
+  }
+
+  select(CityZone zone) {
+    _log.i('select( $zone )');
+    update((previousZone) => zone);
   }
 }
