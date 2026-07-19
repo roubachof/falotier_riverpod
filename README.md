@@ -56,7 +56,8 @@ Or we display an informative message to the user and we give him the possibility
 
 ### Riverpod implementation
 
-[1. Simplest use case: only one dependency](load_from_scratch.md)
+- [1. Simplest use case: only one dependency](load_from_scratch.md)
+- [2. A sequence of dependencies, each with its own loading message and retry](load_from_scratch_case2.md)
 
 ### Refreshing
 
