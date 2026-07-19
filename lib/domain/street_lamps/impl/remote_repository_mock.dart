@@ -63,7 +63,7 @@ class StreetLampRemoteRepositoryMock implements StreetLampRemoteRepository {
   Future<IList<StreetLamp>> getList(CityZone zone) async {
     _log.i('getList( $zone )');
 
-    await _emulator.makeRemoteCallWith(exceptionProbability: 1);
+    await _emulator.makeRemoteCallWith(exceptionProbability: 0);
 
     return _zoneLamps![zone]!.values.toIList();
   }
