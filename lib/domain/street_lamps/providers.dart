@@ -16,12 +16,12 @@ part 'providers.g.dart';
 class StreetLampStore extends _$StreetLampStore {
   static final _log = LoggerFactory.logger('StreetLampStore');
 
-  late final StreetLampRemoteRepository _repo;
+  StreetLampRemoteRepository get _repo =>
+      ref.read(streetLampRemoteRepositoryProvider);
 
   @override
   Future<Map<String, StreetLamp>> build() async {
     _log.i('build()');
-    _repo = ref.watch(streetLampRemoteRepositoryProvider);
 
     final zone = await ref.watch(selectedZoneProvider.future);
     final lamps = await _repo.getList(zone);
