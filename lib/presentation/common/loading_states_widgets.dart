@@ -23,8 +23,10 @@ handleCommandError(
 /// Exécute une commande async avec gestion d'erreur centralisée.
 ///
 /// [onLoadingStart] / [onLoadingEnd] laissent le widget piloter son feedback
-/// (spinner local, overlay, animation). L'erreur remonte toujours via
-/// [handleCommandError] → SnackBar.
+/// (spinner local, overlay, animation). L'erreur remonte via
+/// [handleCommandError] → SnackBar, si le [context] est encore monté.
+/// [onLoadingEnd] est appelé avant [onSuccess], dont les erreurs ne sont pas
+/// confondues avec celles de l'action.
 Future<void> runCommand({
   required BuildContext context,
   required Future Function() action,
@@ -32,15 +34,21 @@ Future<void> runCommand({
   void Function()? onLoadingStart,
   void Function()? onLoadingEnd,
 }) async {
-  if (onLoadingStart != null) onLoadingStart();
+  onLoadingStart?.call();
   try {
     await action();
-    if (onSuccess != null) await onSuccess();
   } catch (e, t) {
-    handleCommandError(context, e, t);
-  } finally {
-    if (onLoadingEnd != null) onLoadingEnd();
+    onLoadingEnd?.call();
+    if (context.mounted) {
+      handleCommandError(context, e, t);
+    } else {
+      _log.e('Error while executing command', error: e, stackTrace: t);
+    }
+    return;
   }
+
+  onLoadingEnd?.call();
+  if (onSuccess != null && context.mounted) await onSuccess();
 }
 
 handleAsyncCommand({
@@ -49,16 +57,15 @@ handleAsyncCommand({
   FutureOr Function()? onSuccess,
   bool showOverlay = false,
 }) {
+  // Resolved before the await: the context may be gone when the command ends.
+  final overlay = showOverlay ? OverlayControllerWidget.of(context) : null;
+
   return runCommand(
     context: context,
     action: future,
     onSuccess: onSuccess,
-    onLoadingStart: showOverlay
-        ? () => OverlayControllerWidget.of(context)?.setOverlayVisible(true)
-        : null,
-    onLoadingEnd: showOverlay
-        ? () => OverlayControllerWidget.of(context)?.setOverlayVisible(false)
-        : null,
+    onLoadingStart: () => overlay?.setOverlayVisible(true),
+    onLoadingEnd: () => overlay?.setOverlayVisible(false),
   );
 }
 
