@@ -41,12 +41,17 @@ class _IconButtonCommandState extends State<IconButtonCommand> {
     );
   }
 
-  Future _internalOnPressed(BuildContext context) {
-    return runCommand(
+  Future _internalOnPressed(BuildContext context) async {
+    if (_isLoading) return;
+
+    await runCommand(
       context: context,
       action: widget.onPressed,
       onLoadingStart: () => setState(() => _isLoading = true),
-      onLoadingEnd: () => setState(() => _isLoading = false),
+      // The tile may be removed from the tree once the action succeeds.
+      onLoadingEnd: () {
+        if (mounted) setState(() => _isLoading = false);
+      },
     );
   }
 }
